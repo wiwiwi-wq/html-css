@@ -1,0 +1,2510 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JS Tasks — Решения задач по функциям</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap");
+
+      :root {
+        --bg: #0a0a0f;
+        --surface: #13131a;
+        --card: #1a1a25;
+        --border: #2a2a3d;
+        --accent: #a855f7;
+        --accent2: #f472b6;
+        --accent3: #f59e0b;
+        --accent4: #10b981;
+        --accent5: #ef4444;
+        --text: #e2e8f0;
+        --muted: #64748b;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background:
+          radial-gradient(
+            ellipse at 15% 25%,
+            rgba(168, 85, 247, 0.09) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse at 85% 75%,
+            rgba(244, 114, 182, 0.07) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse at 50% 50%,
+            rgba(16, 185, 129, 0.04) 0%,
+            transparent 60%
+          );
+        animation: bgShift 20s ease-in-out infinite alternate;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      @keyframes bgShift {
+        0% {
+          transform: translate(0, 0) rotate(0deg);
+        }
+        100% {
+          transform: translate(1.5%, 2%) rotate(2deg);
+        }
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        position: relative;
+        z-index: 1;
+      }
+
+      header {
+        padding: 60px 20px 40px;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+      }
+
+      .badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #a855f7, #f472b6);
+        color: white;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 6px 18px;
+        border-radius: 20px;
+        margin-bottom: 20px;
+      }
+
+      h1 {
+        font-size: clamp(2.5rem, 6vw, 5rem);
+        font-weight: 900;
+        line-height: 1.1;
+        background: linear-gradient(135deg, #fff 0%, #a855f7 45%, #f472b6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 16px;
+      }
+
+      .subtitle {
+        color: var(--muted);
+        font-size: 1.1rem;
+        margin-bottom: 40px;
+      }
+
+      .stats {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-bottom: 50px;
+      }
+
+      .stat-chip {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.9rem;
+      }
+
+      .stat-chip .num {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--accent);
+      }
+
+      .progress-wrap {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px 24px;
+        margin-bottom: 40px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+
+      .progress-label {
+        font-weight: 600;
+        font-size: 0.95rem;
+        white-space: nowrap;
+      }
+      .progress-bar-outer {
+        flex: 1;
+        min-width: 200px;
+        height: 8px;
+        background: var(--border);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .progress-bar-inner {
+        height: 100%;
+        background: linear-gradient(90deg, #a855f7, #f472b6);
+        border-radius: 4px;
+        transition: width 0.4s ease;
+      }
+      .progress-count {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.9rem;
+        color: var(--accent);
+        white-space: nowrap;
+      }
+
+      .btn-reset {
+        background: transparent;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 16px;
+        color: var(--muted);
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+      .btn-reset:hover {
+        border-color: var(--accent5);
+        color: var(--accent5);
+      }
+
+      .controls {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 40px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .search-wrap {
+        flex: 1;
+        min-width: 250px;
+        position: relative;
+      }
+
+      .search-wrap input {
+        width: 100%;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px 16px 12px 44px;
+        color: var(--text);
+        font-family: "Inter", sans-serif;
+        font-size: 0.95rem;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .search-wrap input:focus {
+        border-color: var(--accent);
+      }
+      .search-wrap::before {
+        content: "🔍";
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      .filter-btn {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 16px;
+        color: var(--muted);
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+      .filter-btn:hover,
+      .filter-btn.active {
+        border-color: var(--accent);
+        color: white;
+        background: rgba(168, 85, 247, 0.15);
+      }
+
+      .topic-section {
+        margin-bottom: 60px;
+      }
+
+      .topic-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        background: var(--bg);
+        padding-top: 16px;
+        z-index: 10;
+      }
+
+      .topic-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        flex-shrink: 0;
+      }
+
+      .topic-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+
+      .topic-count {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.8rem;
+        color: var(--muted);
+        background: var(--surface);
+        padding: 4px 12px;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+      }
+
+      .task-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 16px;
+      }
+
+      .task-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px;
+        transition: all 0.25s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .task-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(
+          90deg,
+          var(--card-color, #a855f7),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+
+      .task-card:hover {
+        border-color: var(--card-color, #a855f7);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+      }
+      .task-card:hover::before {
+        opacity: 1;
+      }
+
+      .task-card.done {
+        background: rgba(16, 185, 129, 0.07);
+        border-color: rgba(16, 185, 129, 0.3);
+      }
+      .task-card.done::before {
+        opacity: 1;
+        background: linear-gradient(90deg, #10b981, transparent);
+      }
+
+      .task-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+
+      .task-num {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.75rem;
+        color: var(--muted);
+        background: var(--surface);
+        padding: 3px 8px;
+        border-radius: 6px;
+      }
+
+      .difficulty {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        padding: 3px 10px;
+        border-radius: 20px;
+      }
+      .diff-easy {
+        background: rgba(16, 185, 129, 0.15);
+        color: #10b981;
+      }
+      .diff-medium {
+        background: rgba(245, 158, 11, 0.15);
+        color: #f59e0b;
+      }
+      .diff-hard {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+      }
+
+      .task-text {
+        font-size: 0.93rem;
+        line-height: 1.65;
+        color: var(--text);
+        margin-bottom: 14px;
+      }
+
+      .task-text code {
+        font-family: "JetBrains Mono", monospace;
+        background: var(--surface);
+        color: #a855f7;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.85em;
+      }
+
+      .code-block {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.78rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px 14px;
+        color: #94a3b8;
+        margin-bottom: 14px;
+        white-space: pre;
+        overflow-x: auto;
+        line-height: 1.6;
+      }
+
+      .task-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 14px;
+        flex-wrap: wrap;
+      }
+
+      .btn-run {
+        background: transparent;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 8px 16px;
+        color: var(--muted);
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: all 0.2s;
+        flex: 1;
+      }
+      .btn-run:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: rgba(168, 85, 247, 0.1);
+      }
+
+      .btn-done {
+        background: transparent;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 8px 16px;
+        color: var(--muted);
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: all 0.2s;
+        flex: 1;
+      }
+      .btn-done:hover {
+        border-color: #10b981;
+        color: #10b981;
+      }
+      .task-card.done .btn-done {
+        background: rgba(16, 185, 129, 0.1);
+        border-color: #10b981;
+        color: #10b981;
+      }
+
+      .float-counter {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: linear-gradient(135deg, #a855f7, #f472b6);
+        border-radius: 20px;
+        padding: 14px 22px;
+        font-weight: 700;
+        font-size: 1rem;
+        box-shadow: 0 8px 30px rgba(168, 85, 247, 0.45);
+        z-index: 100;
+        transition: transform 0.2s;
+        cursor: default;
+      }
+      .float-counter:hover {
+        transform: scale(1.05);
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 3px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--accent);
+      }
+
+      @media (max-width: 600px) {
+        .task-grid {
+          grid-template-columns: 1fr;
+        }
+        h1 {
+          font-size: 2.5rem;
+        }
+        .float-counter {
+          bottom: 16px;
+          right: 16px;
+          padding: 10px 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="badge">✦ JavaScript Practice</div>
+      <h1>Решения задач<br />по функциям</h1>
+      <p class="subtitle">Функции · Function Expression · Стрелочные функции</p>
+      <div class="stats">
+        <div class="stat-chip"><span class="num">200</span>&nbsp;заданий</div>
+        <div class="stat-chip"><span class="num">3</span>&nbsp;темы</div>
+        <div class="stat-chip">
+          <span class="num" id="easyCount">0</span>&nbsp;лёгких
+        </div>
+        <div class="stat-chip">
+          <span class="num" id="medCount">0</span>&nbsp;средних
+        </div>
+        <div class="stat-chip">
+          <span class="num" id="hardCount">0</span>&nbsp;сложных
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="progress-wrap">
+        <span class="progress-label">⚡ Прогресс</span>
+        <div class="progress-bar-outer">
+          <div
+            class="progress-bar-inner"
+            id="progressBar"
+            style="width: 0%"
+          ></div>
+        </div>
+        <span class="progress-count" id="progressText">0 / 200</span>
+        <button class="btn-reset" onclick="resetAll()">Сбросить</button>
+      </div>
+
+      <div class="controls">
+        <div class="search-wrap">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Поиск задания..."
+            oninput="filterTasks()"
+          />
+        </div>
+        <button class="filter-btn active" onclick="setFilter('all', this)">
+          Все
+        </button>
+        <button class="filter-btn" onclick="setFilter('easy', this)">
+          Лёгкие
+        </button>
+        <button class="filter-btn" onclick="setFilter('medium', this)">
+          Средние
+        </button>
+        <button class="filter-btn" onclick="setFilter('hard', this)">
+          Сложные
+        </button>
+        <button class="filter-btn" onclick="setFilter('done', this)">
+          Выполненные
+        </button>
+        <button class="filter-btn" onclick="setFilter('undone', this)">
+          Невыполненные
+        </button>
+      </div>
+
+      <div id="tasksRoot"></div>
+    </div>
+
+    <div class="float-counter" id="floatCounter">✅ 0 / 200</div>
+
+    <script>
+      const TOPICS = [
+        {
+          id: "functions",
+          title: "Функции",
+          icon: "⚙️",
+          color: "#a855f7",
+          tasks: [
+            // EASY
+            {
+              d: "easy",
+              t: 'Напиши функцию <code>greet(name)</code>, которая возвращает строку <code>"Привет, name!"</code>.',
+              code: 'function greet(name) {\n    return `Привет, ${name}!`;\n}\n\n// Пример использования:\n// greet("Анна") → "Привет, Анна!"',
+              run: function() { 
+                function greet(name) {
+                    return `Привет, ${name}!`;
+                }
+                alert(greet("Анна"));
+              }
+            },
+            {
+              d: "easy",
+              t: "Напиши функцию <code>sum(a, b)</code>, возвращающую сумму двух чисел.",
+              code: 'function sum(a, b) {\n    return a + b;\n}\n\n// Пример:\n// sum(5, 3) → 8',
+              run: function() { 
+                function sum(a, b) {
+                    return a + b;
+                }
+                alert(`5 + 3 = ${sum(5, 3)}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Чем отличается <code>return</code> от <code>console.log</code> внутри функции?",
+              code: '// return возвращает значение из функции,\n// console.log только выводит в консоль\n\nfunction example1() {\n    console.log("Привет");\n    return "Результат";\n}\n\n// return можно использовать для сохранения результата\n// console.log только для отладки',
+              run: function() { 
+                alert("return: возвращает значение и завершает функцию\nconsole.log: только выводит в консоль, функция продолжает работу");
+              }
+            },
+            {
+              d: "easy",
+              t: "Что такое параметры функции? Чем они отличаются от аргументов?",
+              code: '// Параметры - переменные при объявлении функции\n// Аргументы - значения при вызове\n\nfunction multiply(a, b) { // a, b - параметры\n    return a * b;\n}\n\nmultiply(5, 3); // 5, 3 - аргументы',
+              run: function() { 
+                alert("Параметры - это переменные в определении функции\nАргументы - конкретные значения при вызове");
+              }
+            },
+            {
+              d: "easy",
+              t: "Напиши функцию <code>isEven(n)</code>, возвращающую <code>true</code> если число чётное.",
+              code: 'function isEven(n) {\n    return n % 2 === 0;\n}\n\n// Пример:\n// isEven(4) → true\n// isEven(7) → false',
+              run: function() { 
+                function isEven(n) {
+                    return n % 2 === 0;
+                }
+                alert(`4 - четное? ${isEven(4)}\n7 - четное? ${isEven(7)}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Что произойдёт если вызвать функцию с меньшим количеством аргументов чем параметров?",
+              code: 'function test(a, b, c) {\n    console.log(a, b, c);\n}\n\ntest(1, 2); // 1, 2, undefined\n\n// Недостающие параметры получают undefined',
+              run: function() { 
+                alert("Недостающие параметры получают значение undefined");
+              }
+            },
+            {
+              d: "easy",
+              t: "Что такое параметры по умолчанию (default parameters)? Напиши пример.",
+              code: 'function greet(name = "Гость") {\n    return `Привет, ${name}!`;\n}\n\n// Пример:\n// greet() → "Привет, Гость!"\n// greet("Анна") → "Привет, Анна!"',
+              run: function() { 
+                function greet(name = "Гость") {
+                    return `Привет, ${name}!`;
+                }
+                alert(`Без аргумента: ${greet()}\nС аргументом: ${greet("Анна")}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Напиши функцию <code>power(base, exp = 2)</code> — возводит число в степень (по умолчанию в квадрат).",
+              code: 'function power(base, exp = 2) {\n    return base ** exp;\n}\n\n// Пример:\n// power(5) → 25\n// power(2, 3) → 8',
+              run: function() { 
+                function power(base, exp = 2) {
+                    return base ** exp;
+                }
+                alert(`5² = ${power(5)}\n2³ = ${power(2, 3)}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Что такое <code>arguments</code>? Напиши функцию, выводящую все переданные аргументы.",
+              code: 'function showAll() {\n    for(let i = 0; i < arguments.length; i++) {\n        console.log(`Аргумент ${i}: ${arguments[i]}`);\n    }\n}\n\n// arguments - псевдомассив всех аргументов',
+              run: function() { 
+                function showAll() {
+                    let result = "Аргументы:\n";
+                    for(let i = 0; i < arguments.length; i++) {
+                        result += `[${i}]: ${arguments[i]}\n`;
+                    }
+                    alert(result);
+                }
+                showAll(10, "hello", true, 42);
+              }
+            },
+            {
+              d: "easy",
+              t: "Напиши функцию <code>max(a, b, c)</code>, возвращающую наибольшее из трёх чисел.",
+              code: 'function max(a, b, c) {\n    return Math.max(a, b, c);\n}\n\n// Или вручную:\nfunction maxManual(a, b, c) {\n    if (a >= b && a >= c) return a;\n    if (b >= a && b >= c) return b;\n    return c;\n}',
+              run: function() { 
+                function max(a, b, c) {
+                    return Math.max(a, b, c);
+                }
+                alert(`Максимум из (10, 25, 7): ${max(10, 25, 7)}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Что такое rest-параметр <code>...args</code>? Напиши функцию <code>sumAll(...nums)</code>.",
+              code: 'function sumAll(...nums) {\n    return nums.reduce((sum, num) => sum + num, 0);\n}\n\n// rest-параметр собирает оставшиеся аргументы в массив\n// sumAll(1, 2, 3, 4) → 10',
+              run: function() { 
+                function sumAll(...nums) {
+                    return nums.reduce((sum, num) => sum + num, 0);
+                }
+                alert(`Сумма 1,2,3,4,5 = ${sumAll(1, 2, 3, 4, 5)}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Напиши функцию <code>repeat(str, n)</code>, которая повторяет строку <code>n</code> раз.",
+              code: 'function repeat(str, n) {\n    return str.repeat(n);\n}\n\n// Или вручную:\nfunction repeatManual(str, n) {\n    let result = "";\n    for(let i = 0; i < n; i++) {\n        result += str;\n    }\n    return result;\n}',
+              run: function() { 
+                function repeat(str, n) {
+                    return str.repeat(n);
+                }
+                alert(`"JS" повторенный 3 раза: ${repeat("JS", 3)}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Что такое hoisting (поднятие) для функций объявленных через <code>function</code>?",
+              code: '// Hoisting - функции поднимаются вверх области видимости\n\n// Можно вызвать до объявления:\nhello(); // "Привет"\n\nfunction hello() {\n    console.log("Привет");\n}',
+              run: function() { 
+                alert("Hoisting - механизм, при котором объявления функций перемещаются вверх области видимости. Поэтому function declaration можно вызывать до объявления.");
+              }
+            },
+            {
+              d: "easy",
+              t: "Можно ли вызвать функцию до её объявления? Почему?",
+              code: '// Для Function Declaration - ДА (из-за hoisting)\nsayHi(); // "Привет"\n\nfunction sayHi() {\n    console.log("Привет");\n}\n\n// Для Function Expression - НЕТ\n// sayBye(); // Ошибка!\nconst sayBye = function() {\n    console.log("Пока");\n};',
+              run: function() { 
+                alert("Function Declaration - можно (из-за hoisting)\nFunction Expression - нельзя (присваивание происходит позже)");
+              }
+            },
+            {
+              d: "easy",
+              t: "Напиши функцию <code>celsiusToFahrenheit(c)</code> — конвертация температуры.",
+              code: 'function celsiusToFahrenheit(c) {\n    return c * 9/5 + 32;\n}\n\n// Пример:\n// 0°C → 32°F\n// 100°C → 212°F',
+              run: function() { 
+                function celsiusToFahrenheit(c) {
+                    return c * 9/5 + 32;
+                }
+                alert(`0°C = ${celsiusToFahrenheit(0)}°F\n100°C = ${celsiusToFahrenheit(100)}°F`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Напиши функцию <code>getFullName(firstName, lastName)</code>, возвращающую полное имя.",
+              code: 'function getFullName(firstName, lastName) {\n    return `${firstName} ${lastName}`;\n}\n\n// Пример:\n// getFullName("Иван", "Петров") → "Иван Петров"',
+              run: function() { 
+                function getFullName(firstName, lastName) {
+                    return `${firstName} ${lastName}`;
+                }
+                alert(`Полное имя: ${getFullName("Иван", "Петров")}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Что вернёт функция если в ней нет <code>return</code>?",
+              code: 'function noReturn() {\n    let x = 5;\n    // нет return\n}\n\nconsole.log(noReturn()); // undefined',
+              run: function() { 
+                alert("Функция без return возвращает undefined");
+              }
+            },
+            {
+              d: "easy",
+              t: "Напиши функцию <code>absolute(n)</code> возвращающую модуль числа без использования <code>Math.abs</code>.",
+              code: 'function absolute(n) {\n    return n < 0 ? -n : n;\n}\n\n// Пример:\n// absolute(-5) → 5\n// absolute(10) → 10',
+              run: function() { 
+                function absolute(n) {
+                    return n < 0 ? -n : n;
+                }
+                alert(`|-5| = ${absolute(-5)}\n|10| = ${absolute(10)}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Что такое рекурсия? Напиши функцию <code>countdown(n)</code>, выводящую числа от n до 0.",
+              code: 'function countdown(n) {\n    if (n < 0) return;\n    console.log(n);\n    countdown(n - 1); // рекурсивный вызов\n}\n\n// Рекурсия - функция вызывает саму себя',
+              run: function() { 
+                function countdown(n) {
+                    if (n < 0) return "";
+                    return n + " " + (n > 0 ? countdown(n - 1) : "");
+                }
+                alert(`Обратный отсчет с 5:\n${countdown(5)}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Напиши функцию <code>clamp(val, min, max)</code> ограничивающую значение в диапазоне.",
+              code: 'function clamp(val, min, max) {\n    return Math.min(Math.max(val, min), max);\n}\n\n// Пример:\n// clamp(15, 0, 10) → 10\n// clamp(-5, 0, 10) → 0\n// clamp(7, 0, 10) → 7',
+              run: function() { 
+                function clamp(val, min, max) {
+                    return Math.min(Math.max(val, min), max);
+                }
+                alert(`15 в [0,10] = ${clamp(15, 0, 10)}\n-5 в [0,10] = ${clamp(-5, 0, 10)}\n7 в [0,10] = ${clamp(7, 0, 10)}`);
+              }
+            },
+            // MEDIUM
+            {
+              d: "medium",
+              t: "Что такое область видимости функции (function scope)? Чем она отличается от блочной?",
+              code: '// Function scope - переменные видны внутри всей функции\nfunction test() {\n    if (true) {\n        var x = 1; // видна во всей функции\n        let y = 2; // видна только в блоке\n    }\n    console.log(x); // 1\n    // console.log(y); // Ошибка!\n}',
+              run: function() { 
+                alert("Function scope: переменные с var видны во всей функции\nBlock scope: переменные с let/const видны только внутри блока {}");
+              }
+            },
+            {
+              d: "medium",
+              t: "Что такое замыкание (closure)? Напиши пример: функция-счётчик через замыкание.",
+              code: 'function createCounter() {\n    let count = 0; // приватная переменная\n    \n    return function() {\n        count++;\n        return count;\n    };\n}\n\nconst counter = createCounter();\ncounter(); // 1\ncounter(); // 2',
+              run: function() { 
+                function createCounter() {
+                    let count = 0;
+                    return function() {
+                        count++;
+                        return count;
+                    };
+                }
+                const counter = createCounter();
+                alert(`Первый вызов: ${counter()}\nВторой вызов: ${counter()}\nТретий вызов: ${counter()}`);
+              }
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию <code>makeMultiplier(factor)</code> возвращающую функцию-умножитель.",
+              code: 'function makeMultiplier(factor) {\n    return function(x) {\n        return x * factor;\n    };\n}\n\nconst double = makeMultiplier(2);\nconst triple = makeMultiplier(3);\n\ndouble(5); // 10\ntriple(5); // 15',
+              run: function() { 
+                function makeMultiplier(factor) {
+                    return function(x) {
+                        return x * factor;
+                    };
+                }
+                const double = makeMultiplier(2);
+                const triple = makeMultiplier(3);
+                alert(`Умножить 5 на 2: ${double(5)}\nУмножить 5 на 3: ${triple(5)}`);
+              }
+            },
+            {
+              d: "medium",
+              t: "Что такое чистая функция (pure function)? Приведи пример чистой и нечистой функции.",
+              code: '// Чистая функция: результат зависит только от аргументов\nfunction add(a, b) {\n    return a + b;\n}\n\n// Нечистая функция: использует внешние переменные\nlet tax = 0.2;\nfunction calculatePrice(price) {\n    return price * (1 + tax);\n}',
+              run: function() { 
+                alert("Чистая функция: результат только от аргументов, нет побочных эффектов\nНечистая: зависит от внешнего состояния или изменяет его");
+              }
+            },
+            {
+              d: "medium",
+              t: "Напиши рекурсивную функцию <code>factorial(n)</code>.",
+              code: 'function factorial(n) {\n    if (n <= 1) return 1;\n    return n * factorial(n - 1);\n}\n\n// Пример:\n// factorial(5) = 5*4*3*2*1 = 120',
+              run: function() { 
+                function factorial(n) {
+                    if (n <= 1) return 1;
+                    return n * factorial(n - 1);
+                }
+                alert(`5! = ${factorial(5)}`);
+              }
+            },
+            {
+              d: "medium",
+              t: "Что такое функция высшего порядка (higher-order function)? Приведи пример.",
+              code: '// Функция высшего порядка - принимает функцию или возвращает функцию\n\n// map - пример HOF\nconst numbers = [1, 2, 3];\nconst doubled = numbers.map(x => x * 2);\n\n// Функция, возвращающая функцию\nfunction createMultiplier(factor) {\n    return x => x * factor;\n}',
+              run: function() { 
+                alert("Функция высшего порядка: принимает функцию как аргумент или возвращает функцию\nПримеры: map, filter, reduce, замыкания");
+              }
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию <code>compose(f, g)</code> — возвращает новую функцию <code>f(g(x))</code>.",
+              code: 'function compose(f, g) {\n    return function(x) {\n        return f(g(x));\n    };\n}\n\n// Пример:\nconst double = x => x * 2;\nconst addOne = x => x + 1;\nconst doubleAfterAddOne = compose(double, addOne);\ndoubleAfterAddOne(5); // double(addOne(5)) = double(6) = 12',
+              run: function() { 
+                function compose(f, g) {
+                    return function(x) {
+                        return f(g(x));
+                    };
+                }
+                const double = x => x * 2;
+                const addOne = x => x + 1;
+                const composed = compose(double, addOne);
+                alert(`compose(double, addOne)(5) = ${composed(5)}`);
+              }
+            },
+            {
+              d: "medium",
+              t: "Что такое каррирование (currying)? Преобразуй <code>sum(a, b)</code> в каррированную форму.",
+              code: '// Обычная функция\nfunction sum(a, b) {\n    return a + b;\n}\n\n// Каррированная\nfunction curriedSum(a) {\n    return function(b) {\n        return a + b;\n    };\n}\n\n// Или через стрелки\nconst currySum = a => b => a + b;',
+              run: function() { 
+                function curriedSum(a) {
+                    return function(b) {
+                        return a + b;
+                    };
+                }
+                const add5 = curriedSum(5);
+                alert(`curriedSum(5)(3) = ${curriedSum(5)(3)}\nadd5(7) = ${add5(7)}`);
+              }
+            },
+            {
+              d: "medium",
+              t: "Чем отличается <code>call</code>, <code>apply</code> и <code>bind</code>? Напиши пример каждого.",
+              code: 'const person = {\n    name: "Иван"\n};\n\nfunction greet(greeting, punctuation) {\n    return `${greeting}, ${this.name}${punctuation}`;\n}\n\n// call: передаем аргументы через запятую\ngreet.call(person, "Привет", "!");\n\n// apply: аргументы массивом\ngreet.apply(person, ["Привет", "!"]);\n\n// bind: создает новую функцию\nconst boundGreet = greet.bind(person, "Привет");\nboundGreet("!");',
+              run: function() { 
+                alert("call: func.call(context, arg1, arg2)\napply: func.apply(context, [args])\nbind: возвращает новую функцию с привязанным контекстом");
+              }
+            },
+            {
+              d: "medium",
+              t: "Что такое <code>this</code> внутри обычной функции? От чего зависит его значение?",
+              code: '// this зависит от способа вызова:\n\n// 1. Глобальный контекст - window/global\nfunction test() {\n    console.log(this);\n}\n\n// 2. Как метод объекта - ссылается на объект\nconst obj = {\n    method: test\n};\n\n// 3. Через call/apply - первый аргумент\n// 4. Конструктор (new) - новый объект',
+              run: function() { 
+                alert("this определяется тем, как вызвана функция:\n• Обычный вызов: window/global\n• Метод объекта: объект\n• call/apply: первый аргумент\n• new: новый объект");
+              }
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию <code>memoize(fn)</code> кэширующую результаты вызовов.",
+              code: 'function memoize(fn) {\n    const cache = {};\n    \n    return function(...args) {\n        const key = JSON.stringify(args);\n        if (key in cache) {\n            return cache[key];\n        }\n        cache[key] = fn(...args);\n        return cache[key];\n    };\n}',
+              run: function() { 
+                function memoize(fn) {
+                    const cache = {};
+                    return function(...args) {
+                        const key = JSON.stringify(args);
+                        if (key in cache) {
+                            return `Из кэша: ${cache[key]}`;
+                        }
+                        cache[key] = fn(...args);
+                        return `Вычислено: ${cache[key]}`;
+                    };
+                }
+                const slowFunc = (n) => n * 2;
+                const memoized = memoize(slowFunc);
+                alert(`${memoized(5)}\n${memoized(5)} (должен быть из кэша)`);
+              }
+            },
+            {
+              d: "medium",
+              t: "Что такое IIFE (Immediately Invoked Function Expression)? Напиши пример и объясни зачем.",
+              code: '// IIFE - функция, которая выполняется сразу после создания\n\n(function() {\n    const private = "Это приватно";\n    console.log("Выполнилась сразу");\n})();\n\n// Для изоляции кода, создания приватных переменных\nconst module = (function() {\n    let count = 0;\n    return {\n        increment: () => ++count\n    };\n})();',
+              run: function() { 
+                alert("IIFE используется для:\n• Создания приватных переменных\n• Изоляции кода\n• Модульного паттерна\n• Избежания загрязнения глобальной области видимости");
+              }
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию <code>pipe(...fns)</code> применяющую функции слева направо.",
+              code: 'function pipe(...functions) {\n    return function(initialValue) {\n        return functions.reduce((value, fn) => fn(value), initialValue);\n    };\n}\n\n// Пример:\nconst addOne = x => x + 1;\nconst double = x => x * 2;\nconst toString = x => String(x);\n\nconst process = pipe(addOne, double, toString);\nprocess(5); // addOne(5)=6, double(6)=12, toString(12)="12"',
+              run: function() { 
+                function pipe(...functions) {
+                    return function(initialValue) {
+                        return functions.reduce((value, fn) => fn(value), initialValue);
+                    };
+                }
+                const addOne = x => x + 1;
+                const double = x => x * 2;
+                const toString = x => String(x);
+                const process = pipe(addOne, double, toString);
+                alert(`pipe(addOne, double, toString)(5) = ${process(5)}`);
+              }
+            },
+            {
+              d: "medium",
+              t: "Что такое побочные эффекты (side effects) в функциях? Почему их стараются избегать?",
+              code: '// Функция с побочным эффектом\nlet global = 0;\nfunction sideEffect() {\n    global++; // меняет внешнюю переменную\n}\n\n// Чистая функция без побочных эффектов\nfunction pure(a, b) {\n    return a + b;\n}',
+              run: function() { 
+                alert("Побочные эффекты: изменение внешних переменных, вывод в консоль, запросы к API.\nИх стараются избегать для:\n• Предсказуемости кода\n• Легкости тестирования\n• Параллельного выполнения");
+              }
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию <code>once(fn)</code> — позволяет вызвать <code>fn</code> только один раз.",
+              code: 'function once(fn) {\n    let called = false;\n    let result;\n    \n    return function(...args) {\n        if (!called) {\n            result = fn(...args);\n            called = true;\n            return result;\n        }\n        return result;\n    };\n}\n\nconst logOnce = once(console.log);\nlogOnce("Первый"); // выведет\nlogOnce("Второй"); // не выведет',
+              run: function() { 
+                function once(fn) {
+                    let called = false;
+                    let result;
+                    return function(...args) {
+                        if (!called) {
+                            result = fn(...args);
+                            called = true;
+                            return result;
+                        }
+                        return result;
+                    };
+                }
+                const testOnce = once((x) => `Вызвано с ${x}`);
+                alert(`${testOnce(1)}\n${testOnce(2)} (должен вернуть тот же результат)`);
+              }
+            },
+            {
+              d: "medium",
+              t: "Что произойдёт при рекурсии без базового случая? Что такое stack overflow?",
+              code: 'function infiniteRecursion() {\n    infiniteRecursion(); // нет базового случая\n}\n\n// Бесконечная рекурсия приведет к переполнению стека (stack overflow)\n// Стек вызовов переполняется из-за бесконечного добавления фреймов',
+              run: function() { 
+                alert("Stack overflow - переполнение стека вызовов.\nПроисходит при бесконечной рекурсии или слишком глубокой рекурсии.\nСтек имеет ограниченный размер, и при превышении лимита возникает ошибка.");
+              }
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию <code>debounce(fn, delay)</code> — откладывает вызов до окончания серии событий.",
+              code: 'function debounce(fn, delay) {\n    let timeout;\n    \n    return function(...args) {\n        clearTimeout(timeout);\n        timeout = setTimeout(() => {\n            fn.apply(this, args);\n        }, delay);\n    };\n}\n\n// Используется для оптимизации: поиск при вводе, resize окна',
+              run: function() { 
+                alert("Debounce откладывает выполнение функции до тех пор, пока не пройдет указанное время без нового вызова.\nПолезно для: поиск по мере ввода, обработка resize, scroll.");
+              }
+            },
+            {
+              d: "medium",
+              t: "Что такое частичное применение (partial application)? Напиши функцию <code>partial(fn, ...args)</code>.",
+              code: 'function partial(fn, ...fixedArgs) {\n    return function(...remainingArgs) {\n        return fn(...fixedArgs, ...remainingArgs);\n    };\n}\n\n// Пример:\nconst add = (a, b, c) => a + b + c;\nconst add5and10 = partial(add, 5, 10);\nadd5and10(3); // 5 + 10 + 3 = 18',
+              run: function() { 
+                function partial(fn, ...fixedArgs) {
+                    return function(...remainingArgs) {
+                        return fn(...fixedArgs, ...remainingArgs);
+                    };
+                }
+                const add = (a, b, c) => a + b + c;
+                const add5and10 = partial(add, 5, 10);
+                alert(`partial(add, 5, 10)(3) = ${add5and10(3)}`);
+              }
+            },
+            {
+              d: "medium",
+              t: "Напиши рекурсивную функцию <code>deepClone(obj)</code> для глубокого копирования объекта.",
+              code: 'function deepClone(obj) {\n    if (obj === null || typeof obj !== "object") {\n        return obj;\n    }\n    \n    if (Array.isArray(obj)) {\n        return obj.map(item => deepClone(item));\n    }\n    \n    const cloned = {};\n    for (let key in obj) {\n        if (obj.hasOwnProperty(key)) {\n            cloned[key] = deepClone(obj[key]);\n        }\n    }\n    return cloned;\n}',
+              run: function() { 
+                const original = { a: 1, b: { c: 2, d: [3, 4] } };
+                alert("Глубокое копирование создает полную копию объекта со всеми вложенными структурами, а не ссылку.");
+              }
+            },
+            {
+              d: "medium",
+              t: "Что такое хвостовая рекурсия? Перепиши <code>factorial</code> в хвосторекурсивную форму.",
+              code: '// Обычная рекурсия\nfunction factorial(n) {\n    if (n <= 1) return 1;\n    return n * factorial(n - 1);\n}\n\n// Хвостовая рекурсия\nfunction factorialTail(n, acc = 1) {\n    if (n <= 1) return acc;\n    return factorialTail(n - 1, n * acc);\n}',
+              run: function() { 
+                alert("Хвостовая рекурсия - рекурсивный вызов является последней операцией в функции.\nПозволяет оптимизировать использование стека (TCO).");
+              }
+            },
+            // HARD
+            {
+              d: "hard",
+              t: "Реализуй функцию <code>curry(fn)</code> автоматически каррирующую функцию любой арности.",
+              code: 'function curry(fn) {\n    return function curried(...args) {\n        if (args.length >= fn.length) {\n            return fn.apply(this, args);\n        }\n        return function(...moreArgs) {\n            return curried.apply(this, args.concat(moreArgs));\n        };\n    };\n}\n\n// Пример:\nconst sum = (a, b, c) => a + b + c;\nconst curriedSum = curry(sum);\ncurriedSum(1)(2)(3); // 6',
+              run: function() { 
+                alert("Каррирование преобразует функцию от нескольких аргументов в последовательность функций с одним аргументом.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию <code>trampoline(fn)</code> для устранения stack overflow в рекурсии.",
+              code: 'function trampoline(fn) {\n    return function(...args) {\n        let result = fn(...args);\n        while (typeof result === "function") {\n            result = result();\n        }\n        return result;\n    };\n}\n\n// Используется для оптимизации глубокой рекурсии',
+              run: function() { 
+                alert("Трамплин позволяет выполнять рекурсивные функции без переполнения стека, преобразуя рекурсию в итерацию.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Реализуй <code>throttle(fn, limit)</code> — не более одного вызова за период <code>limit</code> мс.",
+              code: 'function throttle(fn, limit) {\n    let inThrottle;\n    \n    return function(...args) {\n        if (!inThrottle) {\n            fn.apply(this, args);\n            inThrottle = true;\n            setTimeout(() => inThrottle = false, limit);\n        }\n    };\n}\n\n// Используется для: scroll, resize, обработка движений мыши',
+              run: function() { 
+                alert("Throttle ограничивает частоту вызова функции - не чаще одного раза в указанный промежуток времени.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Что такое монадический паттерн Maybe? Реализуй <code>Maybe</code> через функции.",
+              code: 'const Maybe = {\n    of: (value) => ({\n        map: (fn) => value == null ? Maybe.of(null) : Maybe.of(fn(value)),\n        getOrElse: (defaultValue) => value == null ? defaultValue : value\n    })\n};\n\n// Используется для безопасной работы с null/undefined',
+              run: function() { 
+                alert("Maybe - монада для безопасной работы с null/undefined, позволяет избежать проверок на null.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию <code>memoizeDeep(fn)</code> с глубоким сравнением аргументов-объектов.",
+              code: 'function memoizeDeep(fn) {\n    const cache = new Map();\n    \n    function deepEqual(a, b) {\n        return JSON.stringify(a) === JSON.stringify(b);\n    }\n    \n    return function(...args) {\n        for (let [cachedArgs, result] of cache) {\n            if (args.length === cachedArgs.length && \n                args.every((arg, i) => deepEqual(arg, cachedArgs[i]))) {\n                return result;\n            }\n        }\n        const result = fn(...args);\n        cache.set(args, result);\n        return result;\n    };\n}',
+              run: function() { 
+                alert("Memoize с глубоким сравнением кэширует результаты даже для сложных объектов, сравнивая их по содержимому.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Реализуй <code>asyncCompose(...fns)</code> для асинхронных функций возвращающих Promise.",
+              code: 'function asyncCompose(...fns) {\n    return async function(initialValue) {\n        let result = initialValue;\n        for (const fn of fns) {\n            result = await fn(result);\n        }\n        return result;\n    };\n}\n\n// Пример:\nconst asyncDouble = async x => x * 2;\nconst asyncAddOne = async x => x + 1;\nconst composed = asyncCompose(asyncDouble, asyncAddOne);',
+              run: function() { 
+                alert("asyncCompose позволяет комбинировать асинхронные функции, каждая из которых возвращает Promise.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Что такое замыкание над циклом? Объясни классическую ловушку с <code>var</code> в цикле.",
+              code: '// Проблема с var\nfor (var i = 0; i < 3; i++) {\n    setTimeout(() => console.log(i), 100); // 3, 3, 3\n}\n\n// Решение с let\nfor (let i = 0; i < 3; i++) {\n    setTimeout(() => console.log(i), 100); // 0, 1, 2\n}\n\n// Или через замыкание\nfor (var i = 0; i < 3; i++) {\n    ((j) => setTimeout(() => console.log(j), 100))(i);\n}',
+              run: function() { 
+                alert("Проблема: var не имеет блочной области видимости, все setTimeout видят одно значение i.\nРешение: использовать let или замыкание для сохранения значения на каждой итерации.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию <code>overload(...implementations)</code> диспетчеризующую по количеству аргументов.",
+              code: 'function overload(...implementations) {\n    return function(...args) {\n        const implementation = implementations.find(\n            impl => impl.length === args.length\n        );\n        if (implementation) {\n            return implementation.apply(this, args);\n        }\n        throw new Error("No matching overload");\n    };\n}\n\n// Пример:\nconst fn = overload(\n    () => "Без аргументов",\n    (a) => `Один аргумент: ${a}`,\n    (a, b) => `Два аргумента: ${a}, ${b}`\n);',
+              run: function() { 
+                alert("Перегрузка функций в JS через диспетчеризацию по количеству аргументов.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Реализуй функцию <code>retry(fn, times)</code> — повторяет async-функцию при ошибке до <code>times</code> раз.",
+              code: 'async function retry(fn, times) {\n    for (let i = 0; i < times; i++) {\n        try {\n            return await fn();\n        } catch (error) {\n            if (i === times - 1) throw error;\n            console.log(`Попытка ${i + 1} не удалась, пробуем снова...`);\n        }\n    }\n}\n\n// Используется для повторения запросов при временных ошибках',
+              run: function() { 
+                alert("Retry повторяет выполнение асинхронной функции при ошибке указанное количество раз.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Что такое continuation-passing style (CPS)? Перепиши <code>factorial</code> в CPS.",
+              code: '// Обычный стиль\nfunction factorial(n) {\n    if (n <= 1) return 1;\n    return n * factorial(n - 1);\n}\n\n// CPS стиль\nfunction factorialCPS(n, cont) {\n    if (n <= 1) return cont(1);\n    return factorialCPS(n - 1, (result) => cont(n * result));\n}\n\n// Использование\nfactorialCPS(5, (result) => console.log(result));',
+              run: function() { 
+                alert("CPS - стиль программирования, где функции передают результат через callback (continuation).");
+              }
+            },
+            {
+              d: "hard",
+              t: "Реализуй <code>flatten</code> через рекурсию с накопителем (аккумулятором) для любой глубины.",
+              code: 'function flatten(arr, acc = []) {\n    for (let i = 0; i < arr.length; i++) {\n        if (Array.isArray(arr[i])) {\n            flatten(arr[i], acc);\n        } else {\n            acc.push(arr[i]);\n        }\n    }\n    return acc;\n}\n\n// Пример:\nflatten([1, [2, [3, 4], 5], 6]); // [1, 2, 3, 4, 5, 6]',
+              run: function() { 
+                alert("Рекурсивное flatten с аккумулятором для массивов любой глубины вложенности.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию <code>juxt(...fns)</code> — применяет все функции к аргументу, возвращает массив результатов.",
+              code: 'function juxt(...fns) {\n    return function(...args) {\n        return fns.map(fn => fn.apply(this, args));\n    };\n}\n\n// Пример:\nconst fn = juxt(\n    x => x + 1,\n    x => x * 2,\n    x => x ** 2\n);\nfn(5); // [6, 10, 25]',
+              run: function() { 
+                alert("Juxt применяет несколько функций к одним и тем же аргументам и возвращает массив результатов.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Что такое функция-генератор <code>function*</code>? Напиши генератор бесконечной последовательности чисел.",
+              code: 'function* infiniteNumbers() {\n    let i = 0;\n    while (true) {\n        yield i++;\n    }\n}\n\nconst gen = infiniteNumbers();\ngen.next().value; // 0\ngen.next().value; // 1\ngen.next().value; // 2',
+              run: function() { 
+                alert("Генератор - функция, которую можно приостановить и возобновить. Использует yield для возврата значений по требованию.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Реализуй паттерн <code>Observer</code> используя замыкания и функции (без классов).",
+              code: 'function createObservable() {\n    let observers = [];\n    \n    return {\n        subscribe: (observer) => {\n            observers.push(observer);\n            return () => {\n                observers = observers.filter(obs => obs !== observer);\n            };\n        },\n        notify: (data) => {\n            observers.forEach(observer => observer(data));\n        }\n    };\n}\n\nconst observable = createObservable();\nconst unsubscribe = observable.subscribe(data => console.log("Получено:", data));',
+              run: function() { 
+                alert("Observer через замыкания позволяет объектам подписываться и получать уведомления об изменениях.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию <code>createEnum(...keys)</code> возвращающую замороженный объект-перечисление.",
+              code: 'function createEnum(...keys) {\n    const enumObj = {};\n    keys.forEach((key, index) => {\n        enumObj[key] = Symbol(key);\n        enumObj[key.toUpperCase()] = index;\n    });\n    return Object.freeze(enumObj);\n}\n\nconst Colors = createEnum("RED", "GREEN", "BLUE");\n// Colors.RED - уникальный символ\n// Colors.RED === Colors.RED - true\n// Colors.RED === Colors.GREEN - false',
+              run: function() { 
+                alert("createEnum создает иммутабельный объект-перечисление с уникальными значениями.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Что такое функциональная композиция? Докажи что <code>compose(f, g)(x) === f(g(x))</code>.",
+              code: 'const compose = (f, g) => (x) => f(g(x));\n\n// Доказательство:\nconst addOne = x => x + 1;\nconst double = x => x * 2;\n\nconst composed = compose(addOne, double);\nconst manual = (x) => addOne(double(x));\n\n// composed(5) === manual(5) // true',
+              run: function() { 
+                alert("Функциональная композиция - объединение функций, где результат одной передается следующей.\ncompose(f,g)(x) = f(g(x)) по определению.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Реализуй <code>zip(...arrs)</code> принимающий произвольное число массивов через rest-параметры.",
+              code: 'function zip(...arrays) {\n    const length = Math.min(...arrays.map(arr => arr.length));\n    return Array.from({ length }, (_, i) => arrays.map(arr => arr[i]));\n}\n\n// Пример:\nzip([1, 2, 3], ["a", "b", "c"], [true, false]);\n// [[1, "a", true], [2, "b", false], [3, "c", undefined]]',
+              run: function() { 
+                alert("Zip объединяет несколько массивов в один массив кортежей, группируя элементы с одинаковыми индексами.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Напиши <code>createPrivate(init)</code> — объект с приватным состоянием только через замыкание.",
+              code: 'function createPrivate(init) {\n    let privateData = init;\n    \n    return {\n        get: () => privateData,\n        set: (newData) => {\n            privateData = newData;\n            return privateData;\n        },\n        update: (fn) => {\n            privateData = fn(privateData);\n            return privateData;\n        }\n    };\n}\n\nconst obj = createPrivate(10);\nobj.get(); // 10\nobj.set(20); // 20\nobj.update(x => x * 2); // 40',
+              run: function() { 
+                alert("Приватное состояние через замыкание позволяет создавать объекты с данными, доступными только через методы.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Реализуй <code>asyncPool(limit, tasks)</code> — выполняет async задачи с ограничением параллелизма.",
+              code: 'async function asyncPool(limit, tasks) {\n    const results = [];\n    const executing = new Set();\n    \n    for (const task of tasks) {\n        const promise = task().then(result => {\n            executing.delete(promise);\n            return result;\n        });\n        \n        results.push(promise);\n        executing.add(promise);\n        \n        if (executing.size >= limit) {\n            await Promise.race(executing);\n        }\n    }\n    \n    return Promise.all(results);\n}',
+              run: function() { 
+                alert("Async pool ограничивает количество одновременно выполняемых асинхронных задач.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Что такое функтор (functor) в функциональном программировании? Реализуй Box-функтор через замыкание.",
+              code: 'function Box(value) {\n    return {\n        map: (fn) => Box(fn(value)),\n        fold: () => value,\n        toString: () => `Box(${value})`\n    };\n}\n\n// Функтор - контейнер с методом map, сохраняющим структуру\nconst result = Box(5)\n    .map(x => x + 1)\n    .map(x => x * 2)\n    .fold(); // 12',
+              run: function() { 
+                alert("Функтор - структура данных с методом map, который применяет функцию к содержимому, сохраняя структуру контейнера.");
+              }
+            }
+          ]
+        },
+        {
+          id: "funcexpr",
+          title: "Function Expression",
+          icon: "📝",
+          color: "#f472b6",
+          tasks: [
+            // EASY
+            {
+              d: "easy",
+              t: "Что такое Function Expression? Напиши пример и сравни с Function Declaration.",
+              code: '// Function Declaration\nfunction sum(a, b) {\n    return a + b;\n}\n\n// Function Expression\nconst sum = function(a, b) {\n    return a + b;\n};\n\n// Главное отличие: Function Expression нельзя вызвать до объявления',
+              run: function() { 
+                alert("Function Expression - функция, созданная как часть выражения.\nОтличие от Declaration: не поднимается (hoisting), можно использовать анонимные функции.");
+              }
+            },
+            {
+              d: "easy",
+              t: "Присвой функцию переменной <code>const square = ...</code> и вызови её.",
+              code: 'const square = function(x) {\n    return x * x;\n};\n\n// Вызов\nsquare(5); // 25',
+              run: function() { 
+                const square = function(x) {
+                    return x * x;
+                };
+                alert(`square(5) = ${square(5)}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Можно ли вызвать Function Expression до её объявления? Что произойдёт?",
+              code: '// Это вызовет ошибку\n// sayHi(); // ReferenceError\n\nconst sayHi = function() {\n    console.log("Привет!");\n};\n\n// Правильно:\nsayHi(); // "Привет!"',
+              run: function() { 
+                alert("Нельзя вызвать Function Expression до объявления, т.к. переменная с функцией еще не инициализирована (ReferenceError).");
+              }
+            },
+            {
+              d: "easy",
+              t: "Что такое анонимная функция? Напиши анонимный Function Expression.",
+              code: '// Анонимная функция - без имени\nconst greet = function(name) {\n    return `Привет, ${name}!`;\n};\n\n// Используется как callback\nsetTimeout(function() {\n    console.log("Прошла секунда");\n}, 1000);',
+              run: function() { 
+                alert("Анонимная функция - функция без имени, обычно используется как callback или присваивается переменной.");
+              }
+            },
+            {
+              d: "easy",
+              t: "Напиши именованный Function Expression и объясни зачем нужно имя.",
+              code: '// Именованный Function Expression\nconst factorial = function fact(n) {\n    if (n <= 1) return 1;\n    return n * fact(n - 1); // можно использовать имя внутри\n};\n\n// Имя fact видно только внутри функции\n// Помогает при рекурсии и отладке',
+              run: function() { 
+                alert("Именованный Function Expression полезен для рекурсии и отладки (имя видно в стеке вызовов).");
+              }
+            },
+            {
+              d: "easy",
+              t: "Передай Function Expression как аргумент в <code>setTimeout</code>.",
+              code: 'setTimeout(function() {\n    alert("Прошло 2 секунды!");\n}, 2000);\n\n// Или через стрелку\nsetTimeout(() => alert("Прошло 2 секунды!"), 2000);',
+              run: function() { 
+                setTimeout(function() {
+                    alert("Прошло 2 секунды!");
+                }, 2000);
+              }
+            },
+            {
+              d: "easy",
+              t: "Что такое callback-функция? Напиши пример с <code>setTimeout</code>.",
+              code: '// Callback - функция, переданная в другую функцию для выполнения позже\nfunction processUserInput(callback) {\n    const name = "Иван";\n    callback(name);\n}\n\nprocessUserInput(function(name) {\n    console.log(`Привет, ${name}!`);\n});\n\n// Пример с setTimeout\nsetTimeout(() => console.log("Callback выполнен"), 1000);',
+              run: function() { 
+                alert("Callback - функция, которая передается в другую функцию и вызывается позже для обработки результата.");
+              }
+            },
+            {
+              d: "easy",
+              t: "Напиши <code>const multiply = function(a, b) { ... }</code> и вызови.",
+              code: 'const multiply = function(a, b) {\n    return a * b;\n};\n\n// Вызов\nmultiply(4, 5); // 20',
+              run: function() { 
+                const multiply = function(a, b) {
+                    return a * b;
+                };
+                alert(`multiply(4, 5) = ${multiply(4, 5)}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Присвой функцию как значение свойства объекта (метод).",
+              code: 'const calculator = {\n    brand: "Casio",\n    add: function(a, b) {\n        return a + b;\n    },\n    subtract(a, b) { // сокращенный синтаксис\n        return a - b;\n    }\n};\n\ncalculator.add(5, 3); // 8',
+              run: function() { 
+                const calculator = {
+                    add: function(a, b) {
+                        return a + b;
+                    }
+                };
+                alert(`calculator.add(5, 3) = ${calculator.add(5, 3)}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Напиши Function Expression принимающую другую функцию и вызывающую её.",
+              code: 'const runFunction = function(fn, value) {\n    return fn(value);\n};\n\nconst double = function(x) {\n    return x * 2;\n};\n\nrunFunction(double, 5); // 10',
+              run: function() { 
+                const runFunction = function(fn, value) {
+                    return fn(value);
+                };
+                const double = function(x) {
+                    return x * 2;
+                };
+                alert(`runFunction(double, 5) = ${runFunction(double, 5)}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Что такое <code>typeof</code> для переменной содержащей функцию?",
+              code: 'const fn = function() {};\nconsole.log(typeof fn); // "function"\n\n// Функции в JS - особый тип объектов\nconsole.log(fn instanceof Object); // true',
+              run: function() { 
+                alert("typeof для функции возвращает 'function'");
+              }
+            },
+            {
+              d: "easy",
+              t: "Передай Function Expression в метод массива <code>forEach</code>.",
+              code: 'const numbers = [1, 2, 3, 4, 5];\n\nnumbers.forEach(function(num) {\n    console.log(num * 2);\n});\n\n// Сокращенно\nnumbers.forEach(num => console.log(num * 2));',
+              run: function() { 
+                const numbers = [1, 2, 3, 4, 5];
+                let result = [];
+                numbers.forEach(function(num) {
+                    result.push(num * 2);
+                });
+                alert(`Удвоенные числа: ${result.join(", ")}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Чем <code>const f = function foo() {}</code> отличается от <code>function foo() {}</code>?",
+              code: '// Function Declaration\nfunction foo() {}\n\n// Named Function Expression\nconst f = function foo() {};\n\n// Различия:\n// 1. Hoisting - Declaration поднимается\n// 2. Имя foo видно только внутри выражения\n// 3. f.name === "foo" для выражения',
+              run: function() { 
+                alert("Отличия: Declaration поднимается, имя видно везде в области видимости.\nNamed Function Expression - имя только внутри функции, не поднимается.");
+              }
+            },
+            {
+              d: "easy",
+              t: "Напиши Function Expression с параметрами по умолчанию.",
+              code: 'const greet = function(name = "Гость", punctuation = "!") {\n    return `Привет, ${name}${punctuation}`;\n};\n\ngreet(); // "Привет, Гость!"\ngreet("Анна"); // "Привет, Анна!"\ngreet("Иван", "!!!"); // "Привет, Иван!!!"',
+              run: function() { 
+                const greet = function(name = "Гость", punctuation = "!") {
+                    return `Привет, ${name}${punctuation}`;
+                };
+                alert(`${greet()}\n${greet("Анна")}\n${greet("Иван", "!!!")}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Можно ли переопределить переменную с Function Expression? Что происходит с <code>const</code>?",
+              code: 'let fn = function() { return 1; };\nfn = function() { return 2; }; // можно, т.к. let\n\nconst fn2 = function() { return 1; };\n// fn2 = function() { return 2; }; // Ошибка! const нельзя переназначить',
+              run: function() { 
+                alert("С const нельзя переназначить переменную, но можно менять содержимое, если функция не является примитивом.");
+              }
+            },
+            {
+              d: "easy",
+              t: "Напиши функцию выполняющую другую функцию дважды: <code>runTwice(fn)</code>.",
+              code: 'const runTwice = function(fn) {\n    fn();\n    fn();\n};\n\nrunTwice(function() {\n    console.log("Выполнено!");\n});',
+              run: function() { 
+                const runTwice = function(fn) {
+                    fn();
+                    fn();
+                };
+                let count = 0;
+                runTwice(function() {
+                    count++;
+                });
+                alert(`Функция выполнена ${count} раз(а)`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Что произойдёт если вызвать переменную объявленную через <code>let</code> до присваивания функции?",
+              code: 'console.log(fn); // ReferenceError (Temporal Dead Zone)\nlet fn = function() {};\n\n// Переменная в TDZ от начала блока до объявления',
+              run: function() { 
+                alert("Будет ошибка ReferenceError из-за Temporal Dead Zone (TDZ) до инициализации переменной.");
+              }
+            },
+            {
+              d: "easy",
+              t: "Напиши массив из трёх Function Expression и вызови каждую через цикл.",
+              code: 'const functions = [\n    function() { return "Функция 1"; },\n    function() { return "Функция 2"; },\n    function() { return "Функция 3"; }\n];\n\nfor (let i = 0; i < functions.length; i++) {\n    console.log(functions[i]());\n}',
+              run: function() { 
+                const functions = [
+                    function() { return "Функция 1"; },
+                    function() { return "Функция 2"; },
+                    function() { return "Функция 3"; }
+                ];
+                let result = "";
+                for (let i = 0; i < functions.length; i++) {
+                    result += functions[i]() + "\n";
+                }
+                alert(result);
+              }
+            },
+            {
+              d: "easy",
+              t: 'Что такое функция как "first-class citizen" в JavaScript?',
+              code: '// Функции как граждане первого класса:\n// 1. Можно присваивать переменным\nconst fn = function() {};\n\n// 2. Передавать как аргументы\nsetTimeout(function() {}, 1000);\n\n// 3. Возвращать из функций\nfunction createFn() {\n    return function() {};\n}\n\n// 4. Хранить в структурах данных\nconst obj = { method: function() {} };',
+              run: function() { 
+                alert("First-class citizen: функции могут быть присвоены переменным, переданы как аргументы, возвращены из функций, храниться в структурах данных.");
+              }
+            },
+            {
+              d: "easy",
+              t: "Напиши Function Expression которая возвращает другую Function Expression.",
+              code: 'const createMultiplier = function(factor) {\n    return function(x) {\n        return x * factor;\n    };\n};\n\nconst double = createMultiplier(2);\nconst triple = createMultiplier(3);\n\ndouble(5); // 10\ntriple(5); // 15',
+              run: function() { 
+                const createMultiplier = function(factor) {
+                    return function(x) {
+                        return x * factor;
+                    };
+                };
+                const double = createMultiplier(2);
+                alert(`double(5) = ${double(5)}`);
+              }
+            },
+            // MEDIUM
+            {
+              d: "medium",
+              t: "В чём разница hoisting для Function Declaration и Function Expression?",
+              code: '// Declaration - поднимается полностью\nsayHi(); // "Привет!"\nfunction sayHi() { console.log("Привет!"); }\n\n// Expression - не поднимается\n// sayBye(); // Ошибка!\nconst sayBye = function() { console.log("Пока!"); };',
+              run: function() { 
+                alert("Declaration: полный hoisting (можно вызвать до объявления)\nExpression: не hoisting (нельзя вызвать до объявления)");
+              }
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию <code>apply(fn, value)</code> применяющую fn к value и возвращающую результат.",
+              code: 'const apply = function(fn, value) {\n    return fn(value);\n};\n\nconst double = x => x * 2;\napply(double, 5); // 10',
+              run: function() { 
+                const apply = function(fn, value) {
+                    return fn(value);
+                };
+                const double = x => x * 2;
+                alert(`apply(double, 5) = ${apply(double, 5)}`);
+              }
+            },
+            {
+              d: "medium",
+              t: "Что такое немедленно вызываемое Function Expression (IIFE)? Покажи два синтаксиса.",
+              code: '// Способ 1\n(function() {\n    console.log("IIFE выполнен!");\n})();\n\n// Способ 2\n(function() {\n    console.log("IIFE выполнен!");\n}());\n\n// Со стрелкой\n(() => {\n    console.log("IIFE со стрелкой");\n})();',
+              run: function() { 
+                alert("IIFE - Immediately Invoked Function Expression, выполняется сразу после создания.\nИспользуется для изоляции кода и создания приватных переменных.");
+              }
+            },
+            {
+              d: "medium",
+              t: "Используй IIFE для создания модуля с приватными переменными.",
+              code: 'const counter = (function() {\n    let count = 0; // приватная переменная\n    \n    return {\n        increment: function() {\n            count++;\n            return count;\n        },\n        decrement: function() {\n            count--;\n            return count;\n        },\n        getCount: function() {\n            return count;\n        }\n    };\n})();\n\ncounter.increment(); // 1\ncounter.increment(); // 2\ncounter.getCount(); // 2',
+              run: function() { 
+                alert("IIFE модуль создает приватные переменные и возвращает публичный API.\ncount недоступен напрямую, только через методы.");
+              }
+            },
+            {
+              d: "medium",
+              t: "Напиши <code>const factorial = function f(n) {...}</code> используя именованное выражение для рекурсии.",
+              code: 'const factorial = function f(n) {\n    if (n <= 1) return 1;\n    return n * f(n - 1); // используем имя f для рекурсии\n};\n\nfactorial(5); // 120\n\n// Имя f видно только внутри функции\n// Надежнее, чем arguments.callee',
+              run: function() { 
+                const factorial = function f(n) {
+                    if (n <= 1) return 1;
+                    return n * f(n - 1);
+                };
+                alert(`factorial(5) = ${factorial(5)}`);
+              }
+            },
+            {
+              d: "medium",
+              t: "Передай Function Expression в <code>map</code>, <code>filter</code>, <code>reduce</code> — по одному примеру.",
+              code: 'const numbers = [1, 2, 3, 4, 5];\n\nconst doubled = numbers.map(function(n) {\n    return n * 2;\n});\n\nconst evens = numbers.filter(function(n) {\n    return n % 2 === 0;\n});\n\nconst sum = numbers.reduce(function(acc, n) {\n    return acc + n;\n}, 0);',
+              run: function() { 
+                const numbers = [1, 2, 3, 4, 5];
+                const doubled = numbers.map(function(n) { return n * 2; });
+                const evens = numbers.filter(function(n) { return n % 2 === 0; });
+                const sum = numbers.reduce(function(acc, n) { return acc + n; }, 0);
+                alert(`Исходный: ${numbers}\nУдвоенные: ${doubled}\nЧетные: ${evens}\nСумма: ${sum}`);
+              }
+            },
+            {
+              d: "medium",
+              t: "Что такое замыкание в контексте Function Expression? Напиши пример-счётчик.",
+              code: 'const createCounter = function() {\n    let count = 0; // переменная в замыкании\n    \n    return function() {\n        count++;\n        return count;\n    };\n};\n\nconst counter = createCounter();\ncounter(); // 1\ncounter(); // 2\ncounter(); // 3',
+              run: function() { 
+                const createCounter = function() {
+                    let count = 0;
+                    return function() {
+                        count++;
+                        return count;
+                    };
+                };
+                const counter = createCounter();
+                alert(`Первый вызов: ${counter()}\nВторой: ${counter()}\nТретий: ${counter()}`);
+              }
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию <code>createAdder(n)</code> через Function Expression, возвращающую прибавляющую функцию.",
+              code: 'const createAdder = function(n) {\n    return function(x) {\n        return x + n;\n    };\n};\n\nconst add5 = createAdder(5);\nconst add10 = createAdder(10);\n\nadd5(3); // 8\nadd10(3); // 13',
+              run: function() { 
+                const createAdder = function(n) {
+                    return function(x) {
+                        return x + n;
+                    };
+                };
+                const add5 = createAdder(5);
+                alert(`add5(3) = ${add5(3)}`);
+              }
+            },
+            {
+              d: "medium",
+              t: "Что такое рекурсия через именованный Function Expression? Почему это надёжнее чем через имя переменной?",
+              code: '// Надежнее использовать именованное выражение\nconst factorial = function fact(n) {\n    if (n <= 1) return 1;\n    return n * fact(n - 1);\n};\n\n// Проблема с переменной:\nconst factorial2 = function(n) {\n    if (n <= 1) return 1;\n    return n * factorial2(n - 1); // зависимость от внешнего имени\n};\n\n// Если перезаписать factorial2 - рекурсия сломается',
+              run: function() { 
+                alert("Именованное выражение надежнее, т.к. имя функции привязано внутри и не зависит от внешней переменной.");
+              }
+            },
+            {
+              d: "medium",
+              t: "Напиши <code>const compose = function(f, g) {...}</code> и проверь работу.",
+              code: 'const compose = function(f, g) {\n    return function(x) {\n        return f(g(x));\n    };\n};\n\nconst double = x => x * 2;\nconst addOne = x => x + 1;\n\nconst doubleAfterAdd = compose(double, addOne);\ndoubleAfterAdd(5); // double(addOne(5)) = 12',
+              run: function() { 
+                const compose = function(f, g) {
+                    return function(x) {
+                        return f(g(x));
+                    };
+                };
+                const double = x => x * 2;
+                const addOne = x => x + 1;
+                const composed = compose(double, addOne);
+                alert(`compose(double, addOne)(5) = ${composed(5)}`);
+              }
+            },
+            {
+              d: "medium",
+              t: "Как передать Function Expression в качестве обработчика события DOM?",
+              code: '// В браузере\nconst button = document.querySelector("button");\n\nbutton.addEventListener("click", function(event) {\n    console.log("Клик!", event);\n    alert("Кнопка нажата!");\n});\n\n// Или стрелка\nbutton.addEventListener("click", () => alert("Клик!"));',
+              run: function() { 
+                alert("Function Expression передается в addEventListener как callback, вызывается при событии.");
+              }
+            },
+            {
+              d: "medium",
+              t: 'Реализуй паттерн "стратегия" используя объект с Function Expression в качестве значений.',
+              code: 'const strategies = {\n    add: function(a, b) { return a + b; },\n    subtract: function(a, b) { return a - b; },\n    multiply: function(a, b) { return a * b; },\n    divide: function(a, b) { return a / b; }\n};\n\nfunction execute(strategy, a, b) {\n    return strategies[strategy](a, b);\n}\n\nexecute("add", 5, 3); // 8\nexecute("multiply", 5, 3); // 15',
+              run: function() { 
+                const strategies = {
+                    add: function(a, b) { return a + b; },
+                    multiply: function(a, b) { return a * b; }
+                };
+                alert(`add(5,3) = ${strategies.add(5, 3)}\nmultiply(5,3) = ${strategies.multiply(5, 3)}`);
+              }
+            },
+            {
+              d: "medium",
+              t: "Что такое функция обратного вызова (callback)? Напиши свой <code>myForEach(arr, callback)</code>.",
+              code: 'const myForEach = function(arr, callback) {\n    for (let i = 0; i < arr.length; i++) {\n        callback(arr[i], i, arr);\n    }\n};\n\nmyForEach([1, 2, 3], function(item, index) {\n    console.log(`Элемент ${index}: ${item}`);\n});',
+              run: function() { 
+                const myForEach = function(arr, callback) {
+                    let result = "";
+                    for (let i = 0; i < arr.length; i++) {
+                        result += callback(arr[i], i) + "\n";
+                    }
+                    return result;
+                };
+                const res = myForEach([1, 2, 3], function(item, index) {
+                    return `Элемент ${index}: ${item}`;
+                });
+                alert(res);
+              }
+            },
+            {
+              d: "medium",
+              t: "Напиши <code>const memoize = function(fn) {...}</code> кэширующую функцию через замыкание.",
+              code: 'const memoize = function(fn) {\n    const cache = {};\n    \n    return function(...args) {\n        const key = JSON.stringify(args);\n        if (key in cache) {\n            return cache[key];\n        }\n        cache[key] = fn(...args);\n        return cache[key];\n    };\n};\n\nconst expensive = memoize(function(n) {\n    console.log("Вычисление...");\n    return n * n;\n});',
+              run: function() { 
+                alert("Memoize кэширует результаты вызовов функции для одинаковых аргументов.");
+              }
+            },
+            {
+              d: "medium",
+              t: "Чем <code>function.name</code> отличается для Declaration, именованного и анонимного Expression?",
+              code: 'function decl() {}\nconst expr = function() {};\nconst named = function myName() {};\n\nconsole.log(decl.name); // "decl"\nconsole.log(expr.name); // "expr" (имя переменной)\nconsole.log(named.name); // "myName"',
+              run: function() { 
+                alert("Declaration: имя функции\nАнонимное Expression: имя переменной\nИменованное Expression: заданное имя");
+              }
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию <code>createValidator(rules)</code> — принимает объект с правилами-функциями.",
+              code: 'const createValidator = function(rules) {\n    return function(data) {\n        const errors = {};\n        \n        for (const field in rules) {\n            const rule = rules[field];\n            const value = data[field];\n            const error = rule(value);\n            if (error) {\n                errors[field] = error;\n            }\n        }\n        \n        return Object.keys(errors).length ? errors : null;\n    };\n};\n\nconst validateUser = createValidator({\n    name: value => value.length < 3 ? "Слишком короткое" : null,\n    age: value => value < 18 ? "Только для взрослых" : null\n});',
+              run: function() { 
+                alert("createValidator создает функцию валидации на основе переданных правил.");
+              }
+            },
+            {
+              d: "medium",
+              t: "Что произойдёт если внутри именованного Function Expression попытаться изменить его имя?",
+              code: 'const fn = function test() {\n    test = 123; // Игнорируется или ошибка в strict mode\n    console.log(test); // все еще функция\n};\n\n// Имя функции нельзя перезаписать изнутри',
+              run: function() { 
+                alert("Имя именованного Function Expression нельзя изменить внутри функции, оно доступно только для чтения.");
+              }
+            },
+            {
+              d: "medium",
+              t: "Реализуй цепочку вызовов (method chaining) используя Function Expression.",
+              code: 'const calculator = function(initial = 0) {\n    let value = initial;\n    \n    return {\n        add: function(n) {\n            value += n;\n            return this; // возвращаем this для цепочки\n        },\n        subtract: function(n) {\n            value -= n;\n            return this;\n        },\n        result: function() {\n            return value;\n        }\n    };\n};\n\nconst result = calculator(10)\n    .add(5)\n    .subtract(3)\n    .add(2)\n    .result(); // 14',
+              run: function() { 
+                alert("Method chaining достигается возвратом this из каждого метода.");
+              }
+            },
+            {
+              d: "medium",
+              t: "Напиши <code>const once = function(fn) {...}</code> — функцию, выполняемую только один раз.",
+              code: 'const once = function(fn) {\n    let called = false;\n    let result;\n    \n    return function(...args) {\n        if (!called) {\n            result = fn(...args);\n            called = true;\n            return result;\n        }\n        return result;\n    };\n};\n\nconst logOnce = once(console.log);\nlogOnce("Первый"); // выведет\nlogOnce("Второй"); // не выведет',
+              run: function() { 
+                alert("once гарантирует, что функция будет выполнена только один раз, последующие вызовы возвращают результат первого.");
+              }
+            },
+            {
+              d: "medium",
+              t: 'Что такое "функциональный интерфейс" (functional interface)? Как Function Expression его реализует?',
+              code: '// Функциональный интерфейс - объект с единственным методом\n// В JS реализуется через функцию\n\nconst comparator = function(a, b) {\n    return a - b;\n};\n\n[3, 1, 4, 2].sort(comparator);\n\nconst predicate = function(x) {\n    return x > 0;\n};\n\n[-1, 2, -3, 4].filter(predicate);',
+              run: function() { 
+                alert("В JS функциональный интерфейс - просто функция, которую можно передать как callback.\nFunction Expression идеально подходит для этого.");
+              }
+            },
+            // HARD
+            {
+              d: "hard",
+              t: "Реализуй Y-комбинатор через Function Expression для анонимной рекурсии.",
+              code: 'const Y = function(f) {\n    return (function(g) {\n        return g(g);\n    })(function(g) {\n        return f(function(...args) {\n            return g(g)(...args);\n        });\n    });\n};\n\n// Использование для факториала\nconst factorial = Y(function(rec) {\n    return function(n) {\n        return n <= 1 ? 1 : n * rec(n - 1);\n    };\n});\n\nfactorial(5); // 120',
+              run: function() { 
+                alert("Y-комбинатор позволяет реализовать рекурсию в языке без поддержки именованных функций.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Что такое замыкание над мутируемой переменной? Напиши ловушку и её исправление.",
+              code: '// Ловушка с var\nfor (var i = 0; i < 3; i++) {\n    setTimeout(function() {\n        console.log(i); // 3, 3, 3\n    }, 100);\n}\n\n// Исправление через замыкание\nfor (var i = 0; i < 3; i++) {\n    (function(j) {\n        setTimeout(function() {\n            console.log(j); // 0, 1, 2\n        }, 100);\n    })(i);\n}\n\n// Или через let\nfor (let i = 0; i < 3; i++) {\n    setTimeout(() => console.log(i), 100); // 0, 1, 2\n}',
+              run: function() { 
+                alert("Проблема: все callback видят одно значение переменной.\nРешение: замыкание с копией значения или let.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Реализуй <code>const pipeline = function(...fns) {...}</code> для цепочечной обработки данных.",
+              code: 'const pipeline = function(...fns) {\n    return function(initial) {\n        return fns.reduce((acc, fn) => fn(acc), initial);\n    };\n};\n\nconst process = pipeline(\n    x => x * 2,\n    x => x + 1,\n    x => String(x)\n);\n\nprocess(5); // "11"',
+              run: function() { 
+                const pipeline = function(...fns) {
+                    return function(initial) {
+                        return fns.reduce((acc, fn) => fn(acc), initial);
+                    };
+                };
+                const process = pipeline(x => x * 2, x => x + 1, x => String(x));
+                alert(`pipeline(5) = ${process(5)}`);
+              }
+            },
+            {
+              d: "hard",
+              t: "Напиши <code>const curry = function(fn) {...}</code> автоматически каррирующую через замыкание.",
+              code: 'const curry = function(fn) {\n    return function curried(...args) {\n        if (args.length >= fn.length) {\n            return fn.apply(this, args);\n        }\n        return function(...more) {\n            return curried.apply(this, args.concat(more));\n        };\n    };\n};\n\nconst sum = (a, b, c) => a + b + c;\nconst curriedSum = curry(sum);\ncurriedSum(1)(2)(3); // 6',
+              run: function() { 
+                alert("Каррирование преобразует функцию от нескольких аргументов в цепочку функций от одного аргумента.");
+              }
+            },
+            {
+              d: "hard",
+              t: 'Что такое "частичное применение" через Function Expression? Реализуй <code>partial</code>.',
+              code: 'const partial = function(fn, ...fixedArgs) {\n    return function(...remainingArgs) {\n        return fn.apply(this, fixedArgs.concat(remainingArgs));\n    };\n};\n\nconst add = (a, b, c) => a + b + c;\nconst add5and10 = partial(add, 5, 10);\nadd5and10(3); // 18',
+              run: function() { 
+                alert("Частичное применение фиксирует часть аргументов функции, возвращая функцию для остальных.");
+              }
+            },
+            {
+              d: "hard",
+              t: 'Реализуй паттерн "Decorator" через Function Expression обворачивающую оригинальную функцию.',
+              code: 'const decorator = function(fn) {\n    return function(...args) {\n        console.log("До вызова", args);\n        const result = fn.apply(this, args);\n        console.log("После вызова", result);\n        return result;\n    };\n};\n\nconst logDecorator = function(fn) {\n    return function(...args) {\n        console.log(`Вызов с аргументами: ${args}`);\n        return fn.apply(this, args);\n    };\n};\n\nconst sum = (a, b) => a + b;\nconst decoratedSum = decorator(sum);',
+              run: function() { 
+                alert("Декоратор оборачивает функцию, добавляя функциональность без изменения оригинальной функции.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Напиши <code>const lazy = function(fn) {...}</code> — откладывает вычисление до первого обращения.",
+              code: 'const lazy = function(fn) {\n    let evaluated = false;\n    let result;\n    \n    return function() {\n        if (!evaluated) {\n            result = fn();\n            evaluated = true;\n        }\n        return result;\n    };\n};\n\nconst expensive = lazy(() => {\n    console.log("Тяжелое вычисление...");\n    return 42;\n});\n\n// Значение вычисляется только при первом вызове\nexpensive(); // вычисление\nexpensive(); // из кэша',
+              run: function() { 
+                alert("Ленивые вычисления откладывают вычисление значения до первого использования.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Что происходит с <code>this</code> в Function Expression используемой как метод vs как callback?",
+              code: 'const obj = {\n    name: "Объект",\n    method: function() {\n        console.log(this.name); // "Объект"\n        \n        function callback() {\n            console.log(this.name); // undefined (или window)\n        }\n        callback();\n        \n        // Решение через стрелку\n        const arrowCallback = () => {\n            console.log(this.name); // "Объект"\n        };\n        arrowCallback();\n    }\n};',
+              run: function() { 
+                alert("В методе this указывает на объект. Во внутреннем callback this теряется, нужно использовать стрелку или bind.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Реализуй EventEmitter через замыкание: <code>on</code>, <code>off</code>, <code>emit</code> как Function Expression.",
+              code: 'const createEventEmitter = function() {\n    const events = {};\n    \n    return {\n        on: function(event, listener) {\n            if (!events[event]) events[event] = [];\n            events[event].push(listener);\n            return () => this.off(event, listener);\n        },\n        off: function(event, listener) {\n            if (!events[event]) return;\n            events[event] = events[event].filter(l => l !== listener);\n        },\n        emit: function(event, ...args) {\n            if (!events[event]) return;\n            events[event].forEach(listener => listener(...args));\n        }\n    };\n};\n\nconst emitter = createEventEmitter();\nconst unsubscribe = emitter.on("click", data => console.log("Клик", data));\nemitter.emit("click", "данные");',
+              run: function() { 
+                alert("EventEmitter через замыкание позволяет подписываться и отправлять события.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Напиши <code>const memoizeAsync = function(fn) {...}</code> для кэширования async функций.",
+              code: 'const memoizeAsync = function(fn) {\n    const cache = new Map();\n    \n    return async function(...args) {\n        const key = JSON.stringify(args);\n        if (cache.has(key)) {\n            return cache.get(key);\n        }\n        const promise = fn.apply(this, args);\n        cache.set(key, promise);\n        return promise;\n    };\n};\n\nconst fetchData = memoizeAsync(async (id) => {\n    const response = await fetch(`/api/${id}`);\n    return response.json();\n});',
+              run: function() { 
+                alert("memoizeAsync кэширует Promise, чтобы избежать повторных запросов.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Реализуй <code>const sequence = function(...fns) {...}</code> — выполняет функции последовательно передавая результат.",
+              code: 'const sequence = function(...fns) {\n    return function(initial) {\n        return fns.reduce((acc, fn) => fn(acc), initial);\n    };\n};\n\nconst addOne = x => x + 1;\nconst double = x => x * 2;\nconst toString = x => String(x);\n\nconst process = sequence(addOne, double, toString);\nprocess(5); // "12"',
+              run: function() { 
+                const sequence = function(...fns) {
+                    return function(initial) {
+                        return fns.reduce((acc, fn) => fn(acc), initial);
+                    };
+                };
+                const addOne = x => x + 1;
+                const double = x => x * 2;
+                const process = sequence(addOne, double);
+                alert(`sequence(addOne, double)(5) = ${process(5)}`);
+              }
+            },
+            {
+              d: "hard",
+              t: 'Что такое "функция первого класса"? Докажи это свойство тремя конкретными примерами с Function Expression.',
+              code: '// 1. Присваивание переменной\nconst fn = function() { return 1; };\n\n// 2. Передача как аргумент\nsetTimeout(function() { console.log("done"); }, 1000);\n\n// 3. Возврат из функции\nfunction createFn() {\n    return function() { return 42; };\n}\n\n// 4. Хранение в структурах\nconst obj = { method: function() {} };\nconst arr = [function() {}];',
+              run: function() { 
+                alert("Функции первого класса могут быть:\n• присвоены переменным\n• переданы как аргументы\n• возвращены из функций\n• храниться в структурах данных");
+              }
+            },
+            {
+              d: "hard",
+              t: "Напиши <code>const createStateMachine = function(transitions) {...}</code> через замыкание.",
+              code: 'const createStateMachine = function(initialState, transitions) {\n    let state = initialState;\n    \n    return {\n        getState: () => state,\n        transition: function(action, ...args) {\n            const transition = transitions[state]?.[action];\n            if (transition) {\n                const nextState = transition(...args);\n                if (nextState) {\n                    state = nextState;\n                }\n            }\n            return state;\n        }\n    };\n};\n\nconst machine = createStateMachine("idle", {\n    idle: {\n        start: () => "running",\n        stop: () => "stopped"\n    },\n    running: {\n        pause: () => "paused",\n        stop: () => "stopped"\n    }\n});',
+              run: function() { 
+                alert("State machine управляет состояниями и переходами через замыкание.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Реализуй систему middleware через Function Expression: <code>const use = function(fn) {...}</code>.",
+              code: 'const createMiddleware = function() {\n    let middlewares = [];\n    \n    const use = function(fn) {\n        middlewares.push(fn);\n    };\n    \n    const run = function(context) {\n        let index = 0;\n        \n        const next = function() {\n            if (index < middlewares.length) {\n                return middlewares[index++](context, next);\n            }\n        };\n        \n        return next();\n    };\n    \n    return { use, run };\n};\n\nconst app = createMiddleware();\napp.use((ctx, next) => {\n    console.log("Логгер", ctx);\n    next();\n});',
+              run: function() { 
+                alert("Middleware система через замыкания и цепочку вызовов next.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Что такое referential transparency? Напиши пример Function Expression удовлетворяющей этому свойству.",
+              code: '// Референтная прозрачность - выражение можно заменить его результатом\n// без изменения поведения программы\n\n// Референтно прозрачная функция\nconst add = function(a, b) {\n    return a + b;\n};\n\n// add(2, 3) можно заменить на 5\nconst x = add(2, 3) + 10; // 15\nconst y = 5 + 10; // 15\n\n// Не прозрачная\nlet counter = 0;\nconst increment = function() {\n    return counter++;\n};\n// increment() нельзя заменить на число',
+              run: function() { 
+                alert("Референтная прозрачность: выражение можно заменить его результатом.\nЧистые функции обладают этим свойством.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Реализуй <code>const memoizeWithTTL = function(fn, ttl) {...}</code> — кэш с временем жизни.",
+              code: 'const memoizeWithTTL = function(fn, ttl = 60000) {\n    const cache = new Map();\n    \n    return function(...args) {\n        const key = JSON.stringify(args);\n        const cached = cache.get(key);\n        \n        if (cached && Date.now() - cached.timestamp < ttl) {\n            return cached.value;\n        }\n        \n        const value = fn.apply(this, args);\n        cache.set(key, { value, timestamp: Date.now() });\n        return value;\n    };\n};\n\nconst expensive = memoizeWithTTL((n) => {\n    return n * n;\n}, 5000);',
+              run: function() { 
+                alert("memoizeWithTTL добавляет время жизни кэшированных значений.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Напиши <code>const createStore = function(reducer, initialState) {...}</code> — мини-Redux через замыкание.",
+              code: 'const createStore = function(reducer, initialState) {\n    let state = initialState;\n    let listeners = [];\n    \n    return {\n        getState: () => state,\n        dispatch: function(action) {\n            state = reducer(state, action);\n            listeners.forEach(listener => listener());\n        },\n        subscribe: function(listener) {\n            listeners.push(listener);\n            return () => {\n                listeners = listeners.filter(l => l !== listener);\n            };\n        }\n    };\n};\n\nconst counterReducer = (state = 0, action) => {\n    switch (action.type) {\n        case "INCREMENT": return state + 1;\n        case "DECREMENT": return state - 1;\n        default: return state;\n    }\n};\n\nconst store = createStore(counterReducer, 0);',
+              run: function() { 
+                alert("Mini-Redux через замыкание с состоянием, dispatch и subscribe.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Реализуй <code>const promisify = function(fn) {...}</code> — конвертирует callback API в Promise.",
+              code: 'const promisify = function(fn) {\n    return function(...args) {\n        return new Promise((resolve, reject) => {\n            fn(...args, (error, result) => {\n                if (error) reject(error);\n                else resolve(result);\n            });\n        });\n    };\n};\n\n// Пример с fs.readFile\nconst readFile = promisify(require("fs").readFile);\nreadFile("file.txt", "utf8").then(console.log);',
+              run: function() { 
+                alert("Promisify преобразует функцию с callback в функцию, возвращающую Promise.");
+              }
+            },
+            {
+              d: "hard",
+              t: 'Что такое "функциональный паттерн Flyweight"? Реализуй через Function Expression и замыкания.',
+              code: 'const createFlyweight = function() {\n    const cache = new Map();\n    \n    return function(...args) {\n        const key = JSON.stringify(args);\n        if (!cache.has(key)) {\n            cache.set(key, {\n                data: args,\n                operation: function() {\n                    return this.data.reduce((a, b) => a + b, 0);\n                }\n            });\n        }\n        return cache.get(key);\n    };\n};\n\nconst getFlyweight = createFlyweight();\nconst obj1 = getFlyweight(1, 2, 3);\nconst obj2 = getFlyweight(1, 2, 3);\nconsole.log(obj1 === obj2); // true',
+              run: function() { 
+                alert("Flyweight оптимизирует память, разделяя общее состояние между объектами.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Напиши <code>const createDI = function() {...}</code> — простой контейнер внедрения зависимостей через замыкание.",
+              code: 'const createDI = function() {\n    const services = new Map();\n    \n    return {\n        register: function(name, factory) {\n            services.set(name, factory);\n        },\n        get: function(name) {\n            const factory = services.get(name);\n            if (!factory) throw new Error(`Service ${name} not found`);\n            return factory(this);\n        }\n    };\n};\n\nconst container = createDI();\ncontainer.register("logger", () => ({\n    log: msg => console.log(msg)\n}));\n\ncontainer.register("userService", (c) => {\n    const logger = c.get("logger");\n    return {\n        getUsers: () => {\n            logger.log("Getting users");\n            return ["User1", "User2"];\n        }\n    };\n});',
+              run: function() { 
+                alert("DI контейнер управляет зависимостями и их созданием через фабрики.");
+              }
+            }
+          ]
+        },
+        {
+          id: "arrows",
+          title: "Стрелочные функции",
+          icon: "🏹",
+          color: "#34d399",
+          tasks: [
+            // EASY
+            {
+              d: "easy",
+              t: "Что такое стрелочная функция? Перепиши <code>function sum(a,b){return a+b}</code> как стрелочную.",
+              code: '// Обычная функция\nfunction sum(a, b) {\n    return a + b;\n}\n\n// Стрелочная функция\nconst sum = (a, b) => a + b;\n\n// С телом\nconst sum = (a, b) => {\n    return a + b;\n};',
+              run: function() { 
+                const sum = (a, b) => a + b;
+                alert(`sum(5, 3) = ${sum(5, 3)}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Как записать стрелочную функцию с одним параметром без скобок?",
+              code: '// С одним параметром скобки можно опустить\nconst double = x => x * 2;\n\n// Эквивалентно:\nconst double = (x) => x * 2;\n\n// Без параметров - пустые скобки обязательны\nconst now = () => new Date();',
+              run: function() { 
+                const double = x => x * 2;
+                alert(`double(5) = ${double(5)}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Как записать стрелочную функцию возвращающую значение без <code>return</code> (implicit return)?",
+              code: '// Неявный возврат (без фигурных скобок)\nconst add = (a, b) => a + b;\n\n// С фигурными скобками нужен return\nconst addWithBody = (a, b) => {\n    const result = a + b;\n    return result;\n};\n\n// Неявный возврат работает только для одного выражения',
+              run: function() { 
+                const add = (a, b) => a + b;
+                alert(`add(5, 3) = ${add(5, 3)}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Как стрелочная функция возвращает объект через implicit return? Почему нужны скобки?",
+              code: '// Для возврата объекта нужно обернуть в скобки\nconst getUser = (name, age) => ({ name, age });\n\n// Без скобок {} будут восприняты как тело функции\n// const getUser = (name, age) => { name, age }; // ошибка\n\nconst user = getUser("Иван", 25);\n// { name: "Иван", age: 25 }',
+              run: function() { 
+                const getUser = (name, age) => ({ name, age });
+                const user = getUser("Иван", 25);
+                alert(`Объект: имя=${user.name}, возраст=${user.age}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Напиши стрелочную функцию <code>double</code> удваивающую число.",
+              code: 'const double = x => x * 2;\n\ndouble(5); // 10\ndouble(10); // 20',
+              run: function() { 
+                const double = x => x * 2;
+                alert(`double(5) = ${double(5)}`);
+              }
+            },
+            {
+              d: "easy",
+              t: 'Перепиши <code>const greet = function(name) { return "Hi " + name; }</code> как стрелку.',
+              code: '// Было\nconst greet = function(name) {\n    return "Hi " + name;\n};\n\n// Стало\nconst greet = name => `Hi ${name}`;\n\ngreet("Иван"); // "Hi Иван"',
+              run: function() { 
+                const greet = name => `Hi ${name}`;
+                alert(greet("Иван"));
+              }
+            },
+            {
+              d: "easy",
+              t: "Используй стрелочную функцию в <code>[1,2,3].map(...)</code> для возведения в квадрат.",
+              code: 'const numbers = [1, 2, 3];\nconst squares = numbers.map(n => n * n);\n\nconsole.log(squares); // [1, 4, 9]',
+              run: function() { 
+                const numbers = [1, 2, 3];
+                const squares = numbers.map(n => n * n);
+                alert(`Квадраты: ${squares}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Используй стрелочную функцию в <code>[1,2,3,4,5].filter(...)</code> для чётных чисел.",
+              code: 'const numbers = [1, 2, 3, 4, 5];\nconst evens = numbers.filter(n => n % 2 === 0);\n\nconsole.log(evens); // [2, 4]',
+              run: function() { 
+                const numbers = [1, 2, 3, 4, 5];
+                const evens = numbers.filter(n => n % 2 === 0);
+                alert(`Четные числа: ${evens}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Используй стрелочную функцию в <code>[1,2,3,4,5].reduce(...)</code> для суммы.",
+              code: 'const numbers = [1, 2, 3, 4, 5];\nconst sum = numbers.reduce((acc, n) => acc + n, 0);\n\nconsole.log(sum); // 15',
+              run: function() { 
+                const numbers = [1, 2, 3, 4, 5];
+                const sum = numbers.reduce((acc, n) => acc + n, 0);
+                alert(`Сумма: ${sum}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Напиши стрелочную функцию без параметров возвращающую текущее время.",
+              code: 'const currentTime = () => new Date().toLocaleTimeString();\n\nconsole.log(currentTime()); // "14:30:45"',
+              run: function() { 
+                const currentTime = () => new Date().toLocaleTimeString();
+                alert(`Текущее время: ${currentTime()}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Чем синтаксис стрелочной функции короче Function Expression? Покажи три сокращения.",
+              code: '// 1. Можно опустить function\n// Вместо\nconst fn = function(x) { return x * 2; };\n// Стало\nconst fn = x => x * 2;\n\n// 2. Можно опустить скобки у одного параметра\n// x => x * 2 вместо (x) => x * 2\n\n// 3. Можно опустить return и фигурные скобки\n// x => x * 2 вместо (x) => { return x * 2; }',
+              run: function() { 
+                alert("Сокращения:\n1. Без function\n2. Без скобок у одного параметра\n3. Без return и {} для одного выражения");
+              }
+            },
+            {
+              d: "easy",
+              t: "Напиши стрелочную функцию <code>isPositive</code> проверяющую что число > 0.",
+              code: 'const isPositive = x => x > 0;\n\nisPositive(5); // true\nisPositive(-3); // false',
+              run: function() { 
+                const isPositive = x => x > 0;
+                alert(`5 > 0? ${isPositive(5)}\n-3 > 0? ${isPositive(-3)}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Передай стрелочную функцию в <code>setTimeout</code>.",
+              code: 'setTimeout(() => {\n    alert("Прошла 1 секунда!");\n}, 1000);\n\n// Или короче\nsetTimeout(() => alert("Прошла 1 секунда!"), 1000);',
+              run: function() { 
+                setTimeout(() => {
+                    alert("Прошла 1 секунда!");
+                }, 1000);
+              }
+            },
+            {
+              d: "easy",
+              t: "Напиши стрелочную функцию с несколькими строками тела (с фигурными скобками).",
+              code: 'const process = (x, y) => {\n    const sum = x + y;\n    const product = x * y;\n    return `Сумма: ${sum}, Произведение: ${product}`;\n};\n\nprocess(5, 3); // "Сумма: 8, Произведение: 15"',
+              run: function() { 
+                const process = (x, y) => {
+                    const sum = x + y;
+                    const product = x * y;
+                    return `Сумма: ${sum}, Произведение: ${product}`;
+                };
+                alert(process(5, 3));
+              }
+            },
+            {
+              d: "easy",
+              t: 'Напиши стрелочную функцию с параметром по умолчанию: <code>const greet = (name = "World") => ...</code>.',
+              code: 'const greet = (name = "World") => `Hello, ${name}!`;\n\ngreet(); // "Hello, World!"\ngreet("Иван"); // "Hello, Иван!"',
+              run: function() { 
+                const greet = (name = "World") => `Hello, ${name}!`;
+                alert(`${greet()}\n${greet("Иван")}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Напиши стрелочную функцию с rest-параметром: <code>const sumAll = (...nums) => ...</code>.",
+              code: 'const sumAll = (...nums) => nums.reduce((sum, n) => sum + n, 0);\n\nsumAll(1, 2, 3); // 6\nsumAll(1, 2, 3, 4, 5); // 15',
+              run: function() { 
+                const sumAll = (...nums) => nums.reduce((sum, n) => sum + n, 0);
+                alert(`sumAll(1,2,3) = ${sumAll(1, 2, 3)}`);
+              }
+            },
+            {
+              d: "easy",
+              t: 'Перепиши callback в <code>setTimeout(function(){console.log("done")}, 1000)</code> на стрелку.',
+              code: '// Было\nsetTimeout(function() {\n    console.log("done");\n}, 1000);\n\n// Стало\nsetTimeout(() => console.log("done"), 1000);',
+              run: function() { 
+                setTimeout(() => alert("done"), 1000);
+              }
+            },
+            {
+              d: "easy",
+              t: "Напиши стрелочную функцию <code>getLength</code> возвращающую длину строки.",
+              code: 'const getLength = str => str.length;\n\ngetLength("Hello"); // 5\ngetLength("JavaScript"); // 10',
+              run: function() { 
+                const getLength = str => str.length;
+                alert(`Длина "Hello": ${getLength("Hello")}\nДлина "JavaScript": ${getLength("JavaScript")}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Используй стрелочную функцию в <code>array.sort()</code> для сортировки по убыванию.",
+              code: 'const numbers = [3, 1, 4, 2, 5];\nnumbers.sort((a, b) => b - a);\n\nconsole.log(numbers); // [5, 4, 3, 2, 1]',
+              run: function() { 
+                const numbers = [3, 1, 4, 2, 5];
+                numbers.sort((a, b) => b - a);
+                alert(`Отсортировано по убыванию: ${numbers}`);
+              }
+            },
+            {
+              d: "easy",
+              t: "Напиши стрелочную функцию принимающую объект и возвращающую одно из его свойств.",
+              code: 'const getName = user => user.name;\n\nconst user = { name: "Иван", age: 25 };\ngetName(user); // "Иван"\n\n// С деструктуризацией\nconst getNameDestruct = ({ name }) => name;',
+              run: function() { 
+                const getName = user => user.name;
+                const user = { name: "Иван", age: 25 };
+                alert(`Имя пользователя: ${getName(user)}`);
+              }
+            },
+            // MEDIUM
+            {
+              d: "medium",
+              t: "В чём главное отличие <code>this</code> в стрелочной функции от обычной?",
+              code: '// Стрелочные функции не имеют своего this\n// Они берут this из внешнего контекста\n\nconst obj = {\n    name: "Объект",\n    regular: function() {\n        console.log(this.name); // "Объект"\n    },\n    arrow: () => {\n        console.log(this.name); // undefined (берет внешний this)\n    }\n};\n\n// В глобальной области this === window',
+              run: function() { 
+                alert("Стрелочные функции не имеют своего this, они наследуют this из внешней области видимости.");
+              }
+            },
+            {
+              d: "medium",
+              t: "Почему стрелочные функции не подходят как методы объекта? Покажи проблему с <code>this</code>.",
+              code: 'const obj = {\n    name: "Мой объект",\n    regularMethod: function() {\n        console.log(this.name); // "Мой объект"\n    },\n    arrowMethod: () => {\n        console.log(this.name); // undefined (или window)\n    }\n};\n\nobj.regularMethod(); // работает\nobj.arrowMethod(); // не работает - this не указывает на obj',
+              run: function() { 
+                alert("Стрелочные функции не подходят для методов, т.к. их this не привязан к объекту, а берется из внешнего контекста.");
+              }
+            },
+            {
+              d: "medium",
+              t: "Что такое лексический <code>this</code>? Покажи классическую проблему с <code>setTimeout</code> и её решение стрелкой.",
+              code: 'const obj = {\n    name: "Объект",\n    delayedLog: function() {\n        // Проблема - this теряется\n        setTimeout(function() {\n            console.log(this.name); // undefined\n        }, 100);\n        \n        // Решение через стрелку\n        setTimeout(() => {\n            console.log(this.name); // "Объект"\n        }, 200);\n    }\n};\n\nobj.delayedLog();',
+              run: function() { 
+                alert("Стрелочная функция сохраняет this из внешнего контекста, что решает проблему с setTimeout.");
+              }
+            },
+            {
+              d: "medium",
+              t: "Можно ли использовать <code>arguments</code> в стрелочной функции? Что происходит?",
+              code: '// В стрелочной функции нет своего arguments\nconst arrow = () => {\n    console.log(arguments); // ошибка или arguments внешней функции\n};\n\n// Для получения всех аргументов используем rest\nconst arrowWithRest = (...args) => {\n    console.log(args);\n};\n\narrowWithRest(1, 2, 3); // [1, 2, 3]',
+              run: function() { 
+                alert("У стрелочных функций нет своего arguments. Для доступа к аргументам нужно использовать rest-параметр (...args).");
+              }
+            },
+            {
+              d: "medium",
+              t: "Можно ли использовать стрелочную функцию как конструктор с <code>new</code>? Что произойдёт?",
+              code: 'const Person = (name) => {\n    this.name = name;\n};\n\n// const ivan = new Person("Иван"); // Ошибка!\n// TypeError: Person is not a constructor\n\n// У стрелочных функций нет [[Construct]] метода',
+              run: function() { 
+                alert("Стрелочные функции нельзя использовать как конструкторы с new. Они не имеют внутреннего метода [[Construct]].");
+              }
+            },
+            {
+              d: "medium",
+              t: "Есть ли у стрелочных функций <code>prototype</code>?",
+              code: 'const arrow = () => {};\nconsole.log(arrow.prototype); // undefined\n\nfunction regular() {}\nconsole.log(regular.prototype); // { constructor: ... }',
+              run: function() { 
+                alert("У стрелочных функций нет свойства prototype, т.к. они не могут быть конструкторами.");
+              }
+            },
+            {
+              d: "medium",
+              t: "Напиши класс с методом использующим стрелочную функцию в callback чтобы сохранить <code>this</code>.",
+              code: 'class User {\n    constructor(name) {\n        this.name = name;\n    }\n    \n    delayedLog() {\n        // Стрелка сохраняет this\n        setTimeout(() => {\n            console.log(this.name);\n        }, 1000);\n    }\n    \n    delayedLogProblem() {\n        // Проблема - this потерян\n        setTimeout(function() {\n            console.log(this.name); // undefined\n        }, 1000);\n    }\n}\n\nconst user = new User("Иван");\nuser.delayedLog(); // "Иван" через секунду',
+              run: function() { 
+                alert("Стрелочная функция в callback класса сохраняет this, указывающий на экземпляр класса.");
+              }
+            },
+            {
+              d: "medium",
+              t: "Напиши каррированную функцию через стрелки: <code>const add = a => b => a + b</code> и вызови её.",
+              code: 'const add = a => b => a + b;\n\n// Вызов\nadd(5)(3); // 8\n\n// Частичное применение\nconst add5 = add(5);\nadd5(3); // 8\nadd5(10); // 15',
+              run: function() { 
+                const add = a => b => a + b;
+                alert(`add(5)(3) = ${add(5)(3)}\nadd5 = add(5), add5(7) = ${add(5)(7)}`);
+              }
+            },
+            {
+              d: "medium",
+              t: "Реализуй <code>compose</code> через стрелочные функции в одну строку.",
+              code: 'const compose = (f, g) => x => f(g(x));\n\n// Пример\nconst double = x => x * 2;\nconst addOne = x => x + 1;\nconst composed = compose(double, addOne);\ncomposed(5); // double(addOne(5)) = 12',
+              run: function() { 
+                const compose = (f, g) => x => f(g(x));
+                const double = x => x * 2;
+                const addOne = x => x + 1;
+                const composed = compose(double, addOne);
+                alert(`compose(double, addOne)(5) = ${composed(5)}`);
+              }
+            },
+            {
+              d: "medium",
+              t: "Напиши стрелочную функцию возвращающую стрелочную функцию (фабрика).",
+              code: 'const createMultiplier = factor => x => x * factor;\n\nconst double = createMultiplier(2);\nconst triple = createMultiplier(3);\n\ndouble(5); // 10\ntriple(5); // 15',
+              run: function() { 
+                const createMultiplier = factor => x => x * factor;
+                const double = createMultiplier(2);
+                alert(`double(5) = ${double(5)}`);
+              }
+            },
+            {
+              d: "medium",
+              t: 'Что такое "стрелочная функция как метод класса" (class field)? Напиши пример и объясни разницу от метода прототипа.',
+              code: 'class User {\n    constructor(name) {\n        this.name = name;\n    }\n    \n    // Метод прототипа\n    regularMethod() {\n        console.log(this.name);\n    }\n    \n    // Стрелка как поле класса - создается для каждого экземпляра\n    arrowMethod = () => {\n        console.log(this.name);\n    }\n}\n\n// arrowMethod привязана к конкретному экземпляру\n// regularMethod - одна на всех в прототипе',
+              run: function() { 
+                alert("Стрелка как поле класса создается для каждого экземпляра и привязана к нему.\nМетод прототипа общий для всех экземпляров.");
+              }
+            },
+            {
+              d: "medium",
+              t: "Перепиши цепочку <code>.map().filter().reduce()</code> используя только стрелочные функции.",
+              code: 'const numbers = [1, 2, 3, 4, 5];\n\nconst result = numbers\n    .map(n => n * 2)      // [2, 4, 6, 8, 10]\n    .filter(n => n > 5)   // [6, 8, 10]\n    .reduce((sum, n) => sum + n, 0); // 24',
+              run: function() { 
+                const numbers = [1, 2, 3, 4, 5];
+                const result = numbers
+                    .map(n => n * 2)
+                    .filter(n => n > 5)
+                    .reduce((sum, n) => sum + n, 0);
+                alert(`Результат цепочки: ${result}`);
+              }
+            },
+            {
+              d: "medium",
+              t: "Можно ли деструктурировать параметры в стрелочной функции? Напиши пример с объектом.",
+              code: '// Деструктуризация объекта\nconst getUserName = ({ name, age }) => `${name}, ${age} лет`;\n\nconst user = { name: "Иван", age: 25, city: "Москва" };\ngetUserName(user); // "Иван, 25 лет"\n\n// С дефолтными значениями\nconst getFullName = ({ firstName = "Гость", lastName = "" }) => \n    `${firstName} ${lastName}`.trim();',
+              run: function() { 
+                const getUserName = ({ name, age }) => `${name}, ${age} лет`;
+                const user = { name: "Иван", age: 25 };
+                alert(getUserName(user));
+              }
+            },
+            {
+              d: "medium",
+              t: "Напиши стрелочную функцию с деструктуризацией массива в параметрах.",
+              code: '// Деструктуризация массива\nconst sumFirstTwo = ([a, b]) => a + b;\n\nsumFirstTwo([5, 3, 7]); // 8\n\n// С rest\nconst processArray = ([first, second, ...rest]) => ({\n    first,\n    second,\n    rest\n});\n\nprocessArray([1, 2, 3, 4, 5]);\n// { first: 1, second: 2, rest: [3, 4, 5] }',
+              run: function() { 
+                const sumFirstTwo = ([a, b]) => a + b;
+                alert(`sumFirstTwo([5,3,7]) = ${sumFirstTwo([5, 3, 7])}`);
+              }
+            },
+            {
+              d: "medium",
+              t: 'Что такое "неявный возврат объекта" в стрелке? Напиши функцию маппинга массива в массив объектов.',
+              code: '// Неявный возврат объекта требует скобок\nconst toUserObject = name => ({ name, id: Date.now() });\n\nconst names = ["Иван", "Мария", "Петр"];\nconst users = names.map(name => ({ \n    name, \n    length: name.length \n}));\n\n// [{ name: "Иван", length: 4 }, ...]',
+              run: function() { 
+                const names = ["Иван", "Мария", "Петр"];
+                const users = names.map(name => ({ name, length: name.length }));
+                alert(`Объекты: ${JSON.stringify(users)}`);
+              }
+            },
+            {
+              d: "medium",
+              t: "Чем отличается стрелочная функция от Function Expression в контексте метода <code>bind</code>?",
+              code: 'const obj = { name: "Объект" };\n\nfunction regular() {\n    console.log(this.name);\n}\n\nconst arrow = () => {\n    console.log(this.name);\n};\n\n// bind работает с обычной функцией\nconst boundRegular = regular.bind(obj);\nboundRegular(); // "Объект"\n\n// bind не влияет на стрелку (у нее фиксированный this)\nconst boundArrow = arrow.bind(obj);\nboundArrow(); // undefined (this из внешнего контекста)',
+              run: function() { 
+                alert("bind не работает со стрелочными функциями, т.к. у них фиксированный this из места определения.");
+              }
+            },
+            {
+              d: "medium",
+              t: "Напиши стрелочную функцию-предикат для <code>Array.prototype.every</code>.",
+              code: 'const numbers = [2, 4, 6, 8, 10];\nconst allEven = numbers.every(n => n % 2 === 0); // true\n\nconst words = ["apple", "banana", "cat"];\nconst allLongerThan2 = words.every(w => w.length > 2); // true\n\n// Предикат - функция, возвращающая boolean',
+              run: function() { 
+                const numbers = [2, 4, 6, 8, 10];
+                const allEven = numbers.every(n => n % 2 === 0);
+                alert(`Все числа четные? ${allEven}`);
+              }
+            },
+            {
+              d: "medium",
+              t: "Реализуй <code>pipe</code> через стрелочные функции: <code>const pipe = (...fns) => x => ...</code>.",
+              code: 'const pipe = (...fns) => x => fns.reduce((acc, fn) => fn(acc), x);\n\nconst addOne = x => x + 1;\nconst double = x => x * 2;\nconst toString = x => String(x);\n\nconst process = pipe(addOne, double, toString);\nprocess(5); // "12"',
+              run: function() { 
+                const pipe = (...fns) => x => fns.reduce((acc, fn) => fn(acc), x);
+                const addOne = x => x + 1;
+                const double = x => x * 2;
+                const process = pipe(addOne, double);
+                alert(`pipe(addOne, double)(5) = ${process(5)}`);
+              }
+            },
+            {
+              d: "medium",
+              t: "Что произойдёт если попытаться вызвать <code>.call()</code> или <code>.apply()</code> на стрелочной функции с другим <code>this</code>?",
+              code: 'const arrow = () => {\n    console.log(this);\n};\n\nconst obj = { name: "Объект" };\n\narrow.call(obj); // this не изменится, будет внешний this\narrow.apply(obj); // тоже\narrow.bind(obj)(); // тоже\n\n// Стрелочные функции игнорируют переданный контекст',
+              run: function() { 
+                alert("call/apply/bind не меняют this стрелочной функции - она всегда использует лексический this из места определения.");
+              }
+            },
+            {
+              d: "medium",
+              t: "Напиши обработчик событий с сохранением контекста через стрелочную функцию внутри класса.",
+              code: 'class Button {\n    constructor(text) {\n        this.text = text;\n        this.count = 0;\n    }\n    \n    // Стрелка как обработчик\n    handleClick = () => {\n        this.count++;\n        console.log(`${this.text} нажат ${this.count} раз`);\n    }\n    \n    render() {\n        const button = document.createElement("button");\n        button.textContent = this.text;\n        // Стрелка сохранит this\n        button.addEventListener("click", this.handleClick);\n        return button;\n    }\n}',
+              run: function() { 
+                alert("Стрелочная функция в обработчике сохраняет this класса, поэтому можно обращаться к свойствам экземпляра.");
+              }
+            },
+            // HARD
+            {
+              d: "hard",
+              t: "Объясни почему стрелочные функции нельзя использовать как генераторы (<code>function*</code>).",
+              code: '// Генератор через function*\nfunction* generator() {\n    yield 1;\n    yield 2;\n}\n\n// Стрелочные функции не могут быть генераторами\n// const gen = *() => { // Синтаксическая ошибка\n//     yield 1;\n// };\n\n// Стрелки не имеют внутреннего [[Generator]] метода',
+              run: function() { 
+                alert("Стрелочные функции нельзя использовать как генераторы, т.к. у них нет внутреннего метода [[Generator]] и они не поддерживают синтаксис yield.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Реализуй Y-комбинатор используя только стрелочные функции.",
+              code: 'const Y = f => (g => g(g))(g => f(x => g(g)(x)));\n\n// Использование для факториала\nconst factorial = Y(rec => n => n <= 1 ? 1 : n * rec(n - 1));\n\nfactorial(5); // 120',
+              run: function() { 
+                alert("Y-комбинатор через стрелочные функции позволяет реализовать рекурсию в чисто функциональном стиле.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Напиши <code>const memoize = fn => { ... }</code> через стрелки с WeakMap для объектных аргументов.",
+              code: 'const memoize = fn => {\n    const cache = new WeakMap();\n    \n    return obj => {\n        if (cache.has(obj)) {\n            return cache.get(obj);\n        }\n        const result = fn(obj);\n        cache.set(obj, result);\n        return result;\n    };\n};\n\n// Только для объектных аргументов\nconst process = memoize(obj => obj.value * 2);\nconst data = { value: 10 };\nprocess(data); // вычисляет\nprocess(data); // из кэша',
+              run: function() { 
+                alert("memoize с WeakMap эффективно кэширует результаты для объектных аргументов, позволяя сборщику мусора удалять неиспользуемые ключи.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Объясни разницу лексического <code>this</code> в стрелках внутри методов объекта vs внутри конструктора класса.",
+              code: '// В методе объекта\nconst obj = {\n    name: "Объект",\n    arrow: () => {\n        console.log(this.name); // this из внешней области (window)\n    }\n};\n\n// В конструкторе класса\nclass User {\n    constructor(name) {\n        this.name = name;\n        this.arrow = () => {\n            console.log(this.name); // this из конструктора\n        };\n    }\n}\n\n// Стрелки в классах получают this экземпляра, т.к. создаются в конструкторе',
+              run: function() { 
+                alert("В методах объекта стрелка берет внешний this (обычно window).\nВ классах стрелка создается в конструкторе и получает this экземпляра.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Реализуй полноценный <code>curry</code> через стрелочные функции: <code>const curry = fn => ...</code>.",
+              code: 'const curry = fn => {\n    const curried = (...args) => \n        args.length >= fn.length \n            ? fn(...args) \n            : (...more) => curried(...args, ...more);\n    return curried;\n};\n\nconst sum = (a, b, c) => a + b + c;\nconst curriedSum = curry(sum);\ncurriedSum(1)(2)(3); // 6',
+              run: function() { 
+                alert("Каррирование через стрелки позволяет вызывать функцию с частичными аргументами.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Напиши цепочку стрелочных функций реализующую паттерн Builder для создания объекта конфигурации.",
+              code: 'const ConfigBuilder = () => {\n    const config = {};\n    \n    const builder = {\n        setHost: host => {\n            config.host = host;\n            return builder;\n        },\n        setPort: port => {\n            config.port = port;\n            return builder;\n        },\n        setSSL: ssl => {\n            config.ssl = ssl;\n            return builder;\n        },\n        build: () => ({ ...config })\n    };\n    \n    return builder;\n};\n\nconst config = ConfigBuilder()\n    .setHost("localhost")\n    .setPort(3000)\n    .setSSL(true)\n    .build();',
+              run: function() { 
+                alert("Builder через стрелки позволяет строить объект с помощью цепочки методов.");
+              }
+            },
+            {
+              d: "hard",
+              t: 'Что такое "arrow function в prototype"? Почему это анти-паттерн? Покажи проблему с памятью.',
+              code: 'function User(name) {\n    this.name = name;\n}\n\n// Анти-паттерн: стрелка в прототипе\nUser.prototype.getName = () => {\n    return this.name; // this не указывает на экземпляр!\n};\n\n// Правильно: обычная функция\nUser.prototype.getName = function() {\n    return this.name;\n};\n\n// Проблема с памятью: стрелки в конструкторе создаются для каждого экземпляра\nfunction BadUser(name) {\n    this.name = name;\n    this.getName = () => this.name; // новая функция для каждого\n}',
+              run: function() { 
+                alert("Стрелки в прототипе не работают (this не экземпляр).\nСтрелки в конструкторе создают копию функции для каждого экземпляра - проблема с памятью.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Реализуй <code>const trampoline = fn => (...args) => {...}</code> через стрелочные функции.",
+              code: 'const trampoline = fn => (...args) => {\n    let result = fn(...args);\n    while (typeof result === "function") {\n        result = result();\n    }\n    return result;\n};\n\n// Использование для хвостовой рекурсии\nconst factorial = n => {\n    const fact = (n, acc) => n <= 1 ? acc : () => fact(n - 1, n * acc);\n    return trampoline(fact)(n, 1);\n};\n\nfactorial(5); // 120',
+              run: function() { 
+                alert("Trampoline через стрелки позволяет выполнять рекурсивные функции без переполнения стека.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Напиши стрелочную функцию реализующую бесточечный стиль (point-free style) для обработки массива.",
+              code: '// Обычный стиль\nconst process1 = arr => arr.map(x => x * 2).filter(x => x > 5);\n\n// Point-free стиль\nconst mapDouble = arr => arr.map(x => x * 2);\nconst filterGt5 = arr => arr.filter(x => x > 5);\nconst compose = (f, g) => x => f(g(x));\n\nconst process2 = compose(filterGt5, mapDouble);\n\n// Еще примеры point-free\nconst sum = arr => arr.reduce((a, b) => a + b, 0);\nconst prop = key => obj => obj[key];\nconst getName = prop("name");',
+              run: function() { 
+                alert("Point-free стиль избегает явного указания аргументов, используя композицию функций.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Реализуй <code>const asyncPipe = (...fns) => x => ...</code> для цепочки async/await функций.",
+              code: 'const asyncPipe = (...fns) => x => \n    fns.reduce(async (acc, fn) => fn(await acc), x);\n\n// Пример\nconst fetchUser = async id => ({ id, name: "User" });\nconst fetchPosts = async user => \n    ({ ...user, posts: ["post1", "post2"] });\nconst fetchComments = async userWithPosts => \n    ({ ...userWithPosts, comments: 5 });\n\nconst getUserData = asyncPipe(fetchUser, fetchPosts, fetchComments);\n// getUserData(1) => Promise с объединенными данными',
+              run: function() { 
+                alert("asyncPipe позволяет комбинировать асинхронные функции, передавая результат каждой следующей.");
+              }
+            },
+            {
+              d: "hard",
+              t: 'Что такое "стрелочная функция и деструктуризация с переименованием и дефолтами"? Напиши сложный пример.',
+              code: 'const processUser = ({\n    name: userName = "Аноним",\n    age: userAge = 0,\n    address: {\n        city = "Неизвестный город",\n        street = "Неизвестная улица"\n    } = {}\n}) => {\n    return `${userName} (${userAge}) живет на ${street} в ${city}`;\n};\n\nconst user = {\n    name: "Иван",\n    age: 25,\n    address: {\n        city: "Москва",\n        street: "Ленина"\n    }\n};\n\nprocessUser(user); // "Иван (25) живет на Ленина в Москва"',
+              run: function() { 
+                alert("Стрелки с глубокой деструктуризацией, переименованием и значениями по умолчанию.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Объясни как стрелочные функции влияют на производительность в горячих путях (hot paths) кода.",
+              code: '// Стрелки создаются каждый раз при выполнении\n[1,2,3].map(x => x * 2); // новая стрелка на каждый map\n\n// Обычная функция создается один раз\nconst double = function(x) { return x * 2; };\n[1,2,3].map(double);\n\n// В горячих путях лучше использовать именованные функции\n// для оптимизации JIT компилятором\n\n// Но в большинстве случаев разница незначительна',
+              run: function() { 
+                alert("В горячих путях лучше использовать именованные функции для оптимизации JIT. Стрелки могут создавать больше объектов, но в типичном коде разница незаметна.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Реализуй функциональный <code>Option/Maybe</code> тип используя только стрелочные функции и замыкания.",
+              code: 'const Option = {\n    some: value => ({\n        map: f => Option.some(f(value)),\n        flatMap: f => f(value),\n        getOrElse: () => value,\n        isSome: true,\n        isNone: false\n    }),\n    none: () => ({\n        map: () => Option.none(),\n        flatMap: () => Option.none(),\n        getOrElse: defaultValue => defaultValue,\n        isSome: false,\n        isNone: true\n    })\n};\n\nconst result = Option.some(5)\n    .map(x => x * 2)\n    .map(x => x + 1)\n    .getOrElse(0); // 11',
+              run: function() { 
+                alert("Option/Maybe через стрелки позволяет безопасно работать с отсутствующими значениями.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Напиши <code>const createTask = (fn) => ({run: () => fn(), map: (f) => createTask(() => f(fn()))})</code> — объясни этот паттерн.",
+              code: 'const createTask = (fn) => ({\n    run: () => fn(),\n    map: (f) => createTask(() => f(fn())),\n    chain: (f) => createTask(() => f(fn()).run())\n});\n\n// Паттерн Task (ленивые вычисления)\nconst task = createTask(() => 5)\n    .map(x => x * 2)\n    .map(x => x + 1);\n\n// Вычисление происходит только при run()\ntask.run(); // 11',
+              run: function() { 
+                alert("Task - ленивые вычисления, позволяющие комбинировать операции без немедленного выполнения.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Что произойдёт с <code>this</code> в стрелочной функции внутри <code>eval()</code>?",
+              code: 'const obj = {\n    name: "Объект",\n    test: function() {\n        eval("console.log(this.name)"); // работает (this метода)\n        \n        const arrow = () => eval("console.log(this.name)"); // тоже работает\n        arrow();\n        \n        const arrow2 = () => { eval("() => console.log(this.name)")(); }; // работает\n    }\n};\n\n// Стрелка сохраняет лексический this даже внутри eval',
+              run: function() { 
+                alert("Стрелочные функции сохраняют лексический this даже внутри eval, т.к. this определяется во время создания функции.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Реализуй реактивную переменную <code>createSignal</code> (как в Solid.js) через стрелочные функции и замыкания.",
+              code: 'const createSignal = (initialValue) => {\n    let value = initialValue;\n    const subscribers = new Set();\n    \n    const read = () => {\n        // Здесь можно добавить отслеживание зависимостей\n        return value;\n    };\n    \n    const write = (newValue) => {\n        value = typeof newValue === "function" ? newValue(value) : newValue;\n        subscribers.forEach(fn => fn());\n    };\n    \n    const subscribe = (fn) => {\n        subscribers.add(fn);\n        return () => subscribers.delete(fn);\n    };\n    \n    return [read, write, subscribe];\n};\n\nconst [count, setCount] = createSignal(0);\nconst unsubscribe = count.subscribe(() => \n    console.log("count изменился:", count())\n);',
+              run: function() { 
+                alert("createSignal создает реактивную переменную с подпиской на изменения.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Напиши <code>const flow = (...fns) => async (...args) => ...</code> с обработкой ошибок на каждом шаге.",
+              code: 'const flow = (...fns) => async (...args) => {\n    let result = args.length > 1 ? args : args[0];\n    \n    for (let i = 0; i < fns.length; i++) {\n        try {\n            result = await fns[i](result);\n        } catch (error) {\n            return Promise.reject({\n                step: i,\n                error,\n                message: `Ошибка на шаге ${i}: ${error.message}`\n            });\n        }\n    }\n    \n    return result;\n};\n\nconst process = flow(\n    x => x * 2,\n    async x => x + 1,\n    x => x.toString()\n);',
+              run: function() { 
+                alert("flow с обработкой ошибок позволяет определить, на каком шаге произошла ошибка в цепочке.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Объясни как стрелочные функции работают с <code>Proxy</code> — какие ловушки можно перехватить?",
+              code: '// Стрелочные функции - обычные объекты, но с некоторыми ограничениями\nconst arrow = () => {};\n\nconst proxy = new Proxy(arrow, {\n    apply(target, thisArg, args) {\n        console.log("Вызов стрелки", args);\n        return target(...args);\n    },\n    construct(target, args) {\n        // Никогда не вызовется - стрелки не конструкторы\n        console.log("construct");\n    }\n});\n\n// apply сработает\nproxy(1, 2, 3);\n\n// construct не сработает (будет ошибка)\n// new proxy(); // TypeError',
+              run: function() { 
+                alert("Со стрелками в Proxy работают ловушки apply, но не construct (стрелки не конструкторы). Другие ловушки работают как с обычными объектами.");
+              }
+            },
+            {
+              d: "hard",
+              t: 'Реализуй паттерн "функциональное обновление состояния" используя только стрелочные функции (без мутаций).',
+              code: 'const createStore = (initialState) => {\n    let state = initialState;\n    const listeners = new Set();\n    \n    const getState = () => state;\n    \n    const update = (updater) => {\n        const newState = updater(state);\n        if (newState !== state) {\n            state = newState;\n            listeners.forEach(fn => fn(state));\n        }\n        return state;\n    };\n    \n    const subscribe = (listener) => {\n        listeners.add(listener);\n        return () => listeners.delete(listener);\n    };\n    \n    return { getState, update, subscribe };\n};\n\nconst store = createStore(0);\nstore.update(x => x + 1); // инкремент\nstore.update(x => x * 2); // умножение\nstore.getState(); // 2',
+              run: function() { 
+                alert("Функциональное обновление использует функции для изменения состояния без мутаций.");
+              }
+            },
+            {
+              d: "hard",
+              t: "Напиши <code>const useReducer = (reducer, init) => {...}</code> — мини-хук через стрелочные функции и замыкания.",
+              code: 'const useReducer = (reducer, initialState) => {\n    let state = initialState;\n    let listeners = [];\n    \n    const dispatch = (action) => {\n        state = reducer(state, action);\n        listeners.forEach(fn => fn(state));\n        return state;\n    };\n    \n    const subscribe = (listener) => {\n        listeners.push(listener);\n        return () => {\n            listeners = listeners.filter(l => l !== listener);\n        };\n    };\n    \n    const getState = () => state;\n    \n    return [getState, dispatch, subscribe];\n};\n\n// Использование\nconst reducer = (state, action) => {\n    switch (action.type) {\n        case "INC": return state + 1;\n        case "DEC": return state - 1;\n        case "SET": return action.payload;\n        default: return state;\n    }\n};\n\nconst [getCount, dispatch] = useReducer(reducer, 0);\ndispatch({ type: "INC" });',
+              run: function() { 
+                alert("useReducer через замыкание реализует паттерн Redux с состоянием и диспатчем.");
+              }
+            }
+          ]
+        }
+      ];
+
+      const STORAGE_KEY = "jsTasks_functions_solutions";
+      let done = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      let currentFilter = "all";
+      let searchQuery = "";
+      const TOTAL = 200;
+
+      function renderAll() {
+        const root = document.getElementById("tasksRoot");
+        root.innerHTML = "";
+        let easy = 0,
+          med = 0,
+          hard = 0;
+        TOPICS.forEach((t) =>
+          t.tasks.forEach((tk) => {
+            if (tk.d === "easy") easy++;
+            else if (tk.d === "medium") med++;
+            else hard++;
+          }),
+        );
+        document.getElementById("easyCount").textContent = easy;
+        document.getElementById("medCount").textContent = med;
+        document.getElementById("hardCount").textContent = hard;
+
+        let num = 0;
+        TOPICS.forEach((topic) => {
+          const sec = document.createElement("section");
+          sec.className = "topic-section";
+
+          const hdr = document.createElement("div");
+          hdr.className = "topic-header";
+          hdr.innerHTML = `
+      <div class="topic-icon" style="background:${topic.color}22;color:${topic.color}">${topic.icon}</div>
+      <span class="topic-title">${topic.title}</span>
+      <span class="topic-count">${topic.tasks.length} заданий</span>
+    `;
+          sec.appendChild(hdr);
+
+          const grid = document.createElement("div");
+          grid.className = "task-grid";
+
+          topic.tasks.forEach((task, i) => {
+            num++;
+            const id = `${topic.id}_${i}`;
+            const card = document.createElement("div");
+            card.className = "task-card" + (done[id] ? " done" : "");
+            card.style.setProperty("--card-color", topic.color);
+            card.dataset.diff = task.d;
+            card.dataset.done = done[id] ? "1" : "0";
+            card.dataset.text = task.t.replace(/<[^>]+>/g, "").toLowerCase();
+
+            const diffLabel = {
+              easy: "Лёгкое",
+              medium: "Среднее",
+              hard: "Сложное",
+            }[task.d];
+            const diffClass = {
+              easy: "diff-easy",
+              medium: "diff-medium",
+              hard: "diff-hard",
+            }[task.d];
+
+            // Создаем функцию для запуска кода
+            const runFunction = task.run;
+
+            card.innerHTML = `
+        <div class="task-top">
+          <span class="task-num">#${String(num).padStart(3, "0")}</span>
+          <span class="difficulty ${diffClass}">${diffLabel}</span>
+        </div>
+        <div class="task-text">${task.t}</div>
+        ${task.code ? `<div class="code-block">${task.code}</div>` : ""}
+        <div class="task-actions">
+          <button class="btn-run" onclick='(${runFunction.toString()})()'>▶ Запустить пример</button>
+          <button class="btn-done" onclick="toggleDone('${id}',this)">
+            ${done[id] ? "✅ Сделано" : "○ Выполнено"}
+          </button>
+        </div>
+      `;
+            grid.appendChild(card);
+          });
+
+          sec.appendChild(grid);
+          root.appendChild(sec);
+        });
+
+        updateProgress();
+        applyFilter();
+      }
+
+      function toggleDone(id, btn) {
+        done[id] = !done[id];
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(done));
+        const card = btn.closest(".task-card");
+        card.classList.toggle("done", done[id]);
+        card.dataset.done = done[id] ? "1" : "0";
+        btn.innerHTML = done[id] ? "✅ Сделано" : "○ Выполнено";
+        updateProgress();
+      }
+
+      function updateProgress() {
+        const cnt = Object.values(done).filter(Boolean).length;
+        const pct = ((cnt / TOTAL) * 100).toFixed(1);
+        document.getElementById("progressBar").style.width = pct + "%";
+        document.getElementById("progressText").textContent =
+          `${cnt} / ${TOTAL}`;
+        document.getElementById("floatCounter").textContent =
+          `✅ ${cnt} / ${TOTAL}`;
+      }
+
+      function setFilter(f, btn) {
+        currentFilter = f;
+        document
+          .querySelectorAll(".filter-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        applyFilter();
+      }
+
+      function filterTasks() {
+        searchQuery = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        applyFilter();
+      }
+
+      function applyFilter() {
+        document.querySelectorAll(".task-card").forEach((card) => {
+          let show = true;
+          if (currentFilter === "easy") show = card.dataset.diff === "easy";
+          else if (currentFilter === "medium")
+            show = card.dataset.diff === "medium";
+          else if (currentFilter === "hard")
+            show = card.dataset.diff === "hard";
+          else if (currentFilter === "done") show = card.dataset.done === "1";
+          else if (currentFilter === "undone") show = card.dataset.done === "0";
+          if (searchQuery && !card.dataset.text.includes(searchQuery))
+            show = false;
+          card.classList.toggle("hidden", !show);
+        });
+        document.querySelectorAll(".topic-section").forEach((sec) => {
+          const vis = [...sec.querySelectorAll(".task-card")].some(
+            (c) => !c.classList.contains("hidden"),
+          );
+          sec.classList.toggle("hidden", !vis);
+        });
+      }
+
+      function resetAll() {
+        if (confirm("Сбросить весь прогресс?")) {
+          done = {};
+          localStorage.removeItem(STORAGE_KEY);
+          renderAll();
+        }
+      }
+
+      renderAll();
+    </script>
+  </body>
+</html>

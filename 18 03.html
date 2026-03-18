@@ -1,0 +1,1615 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JS Tasks — Ответы по типам данных</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap");
+
+      :root {
+        --bg: #0b1020;
+        --surface: #11172a;
+        --card: #161d34;
+        --border: #2a355a;
+        --text: #e5ecff;
+        --muted: #94a3c4;
+        --accent: #5eead4;
+        --accent2: #60a5fa;
+        --accent3: #f59e0b;
+        --accent4: #22c55e;
+        --accent5: #ef4444;
+        --accent6: #a78bfa;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: Inter, sans-serif;
+        background:
+          radial-gradient(
+            circle at top left,
+            rgba(96, 165, 250, 0.12),
+            transparent 30%
+          ),
+          radial-gradient(
+            circle at bottom right,
+            rgba(94, 234, 212, 0.1),
+            transparent 25%
+          ),
+          var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      .container {
+        max-width: 1240px;
+        margin: 0 auto;
+        padding: 0 20px 80px;
+      }
+
+      header {
+        padding: 64px 0 36px;
+        text-align: center;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        background: linear-gradient(135deg, var(--accent2), var(--accent));
+        color: #061018;
+        margin-bottom: 18px;
+      }
+
+      h1 {
+        font-size: clamp(2.4rem, 6vw, 5rem);
+        line-height: 1.05;
+        font-weight: 900;
+        background: linear-gradient(
+          135deg,
+          #fff,
+          var(--accent2),
+          var(--accent)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 12px;
+      }
+
+      .subtitle {
+        color: var(--muted);
+        font-size: 1.05rem;
+        max-width: 760px;
+        margin: 0 auto 34px;
+        line-height: 1.6;
+      }
+
+      .stats {
+        display: flex;
+        justify-content: center;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin-bottom: 28px;
+      }
+
+      .stat-chip {
+        background: rgba(22, 29, 52, 0.9);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 12px 18px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .stat-chip .num {
+        color: var(--accent);
+        font-size: 1.35rem;
+        font-weight: 800;
+      }
+
+      .toolbar,
+      .progress-wrap {
+        background: rgba(22, 29, 52, 0.9);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 16px 18px;
+        margin-bottom: 22px;
+        backdrop-filter: blur(10px);
+      }
+
+      .progress-wrap {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+
+      .progress-label {
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .progress-bar {
+        flex: 1;
+        min-width: 220px;
+        height: 10px;
+        background: #0e1425;
+        border-radius: 999px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+      }
+
+      .progress-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--accent2), var(--accent));
+        transition: width 0.35s ease;
+      }
+
+      .progress-count {
+        font-family: "JetBrains Mono", monospace;
+        color: var(--accent);
+        font-size: 0.9rem;
+        white-space: nowrap;
+      }
+
+      .btn-reset {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        padding: 10px 14px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 700;
+        transition: 0.2s;
+      }
+
+      .btn-reset:hover {
+        color: white;
+        border-color: var(--accent5);
+      }
+
+      .toolbar {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .search-wrap {
+        flex: 1;
+        min-width: 240px;
+        position: relative;
+      }
+
+      .search-wrap input {
+        width: 100%;
+        padding: 12px 14px 12px 42px;
+        border-radius: 12px;
+        background: #0e1425;
+        border: 1px solid var(--border);
+        color: var(--text);
+        outline: none;
+        font-size: 0.95rem;
+      }
+
+      .search-wrap::before {
+        content: "🔎";
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.95rem;
+      }
+
+      .filter-btn {
+        background: #0e1425;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        padding: 10px 14px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 700;
+        transition: 0.2s;
+      }
+
+      .filter-btn:hover,
+      .filter-btn.active {
+        color: white;
+        border-color: var(--accent2);
+        background: rgba(96, 165, 250, 0.12);
+      }
+
+      .topic-section {
+        margin-top: 34px;
+      }
+
+      .topic-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 18px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        background: rgba(11, 16, 32, 0.92);
+        backdrop-filter: blur(12px);
+        z-index: 10;
+      }
+
+      .topic-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        font-size: 1.4rem;
+        flex-shrink: 0;
+      }
+
+      .topic-title {
+        font-size: 1.32rem;
+        font-weight: 800;
+      }
+
+      .topic-count {
+        margin-left: auto;
+        color: var(--muted);
+        border: 1px solid var(--border);
+        background: #0e1425;
+        border-radius: 999px;
+        padding: 5px 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.8rem;
+      }
+
+      .task-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 14px;
+      }
+
+      .task-card {
+        background: rgba(22, 29, 52, 0.94);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 18px;
+        transition:
+          transform 0.18s ease,
+          border-color 0.18s ease,
+          box-shadow 0.18s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .task-card::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 3px;
+        background: linear-gradient(
+          90deg,
+          var(--card-color, var(--accent2)),
+          transparent
+        );
+        opacity: 0;
+        transition: 0.18s;
+      }
+
+      .task-card:hover {
+        transform: translateY(-3px);
+        border-color: var(--card-color, var(--accent2));
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+      }
+
+      .task-card:hover::before {
+        opacity: 1;
+      }
+
+      .task-card.done {
+        border-color: rgba(34, 197, 94, 0.4);
+        background: rgba(34, 197, 94, 0.08);
+      }
+
+      .task-card.done::before {
+        opacity: 1;
+        background: linear-gradient(90deg, var(--accent4), transparent);
+      }
+
+      .task-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .task-num {
+        font-family: "JetBrains Mono", monospace;
+        color: var(--muted);
+        background: #0e1425;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 4px 8px;
+        font-size: 0.76rem;
+      }
+
+      .difficulty {
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 0.7rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+
+      .diff-easy {
+        background: rgba(34, 197, 94, 0.14);
+        color: var(--accent4);
+      }
+      .diff-medium {
+        background: rgba(245, 158, 11, 0.14);
+        color: var(--accent3);
+      }
+      .diff-hard {
+        background: rgba(239, 68, 68, 0.14);
+        color: var(--accent5);
+      }
+
+      .task-text {
+        font-size: 0.94rem;
+        line-height: 1.65;
+        color: var(--text);
+        margin-bottom: 16px;
+      }
+
+      .task-text code {
+        font-family: "JetBrains Mono", monospace;
+        background: #0e1425;
+        border: 1px solid var(--border);
+        border-radius: 7px;
+        padding: 2px 6px;
+        color: var(--accent);
+        font-size: 0.85em;
+      }
+
+      .task-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .btn-done {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        padding: 9px 14px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 700;
+        transition: 0.18s;
+      }
+
+      .btn-done:hover {
+        border-color: var(--accent4);
+        color: var(--accent4);
+      }
+
+      .task-card.done .btn-done {
+        color: var(--accent4);
+        border-color: var(--accent4);
+        background: rgba(34, 197, 94, 0.08);
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .float-counter {
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        background: linear-gradient(135deg, var(--accent2), var(--accent));
+        color: #041018;
+        padding: 14px 18px;
+        border-radius: 18px;
+        font-weight: 900;
+        box-shadow: 0 16px 40px rgba(96, 165, 250, 0.35);
+        z-index: 100;
+      }
+
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 999px;
+      }
+
+      @media (max-width: 680px) {
+        .task-grid {
+          grid-template-columns: 1fr;
+        }
+        .float-counter {
+          right: 12px;
+          bottom: 12px;
+          padding: 10px 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="badge">✦ JavaScript Practice</div>
+        <h1>200 ответов<br />по структурам данных</h1>
+        <p class="subtitle">
+          Типы данных · примитивы · числа · строки · массивы · Map/Set · Date ·
+          JSON
+        </p>
+
+        <div class="stats">
+          <div class="stat-chip"><span class="num">200</span> ответов</div>
+          <div class="stat-chip"><span class="num">13</span> тем</div>
+          <div class="stat-chip">
+            <span class="num" id="easyCount">0</span> лёгких
+          </div>
+          <div class="stat-chip">
+            <span class="num" id="medCount">0</span> средних
+          </div>
+          <div class="stat-chip">
+            <span class="num" id="hardCount">0</span> сложных
+          </div>
+        </div>
+      </header>
+
+      <div class="progress-wrap">
+        <span class="progress-label">⚡ Прогресс</span>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressBar"></div>
+        </div>
+        <span class="progress-count" id="progressText">0 / 200</span>
+        <button class="btn-reset" onclick="resetAll()">Сбросить</button>
+      </div>
+
+      <div class="toolbar">
+        <div class="search-wrap">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Поиск ответа..."
+            oninput="filterTasks()"
+          />
+        </div>
+        <button class="filter-btn active" onclick="setFilter('all', this)">
+          Все
+        </button>
+        <button class="filter-btn" onclick="setFilter('easy', this)">
+          Лёгкие
+        </button>
+        <button class="filter-btn" onclick="setFilter('medium', this)">
+          Средние
+        </button>
+        <button class="filter-btn" onclick="setFilter('hard', this)">
+          Сложные
+        </button>
+        <button class="filter-btn" onclick="setFilter('done', this)">
+          Выполненные
+        </button>
+        <button class="filter-btn" onclick="setFilter('undone', this)">
+          Невыполненные
+        </button>
+      </div>
+
+      <div id="tasksRoot"></div>
+    </div>
+
+    <div class="float-counter" id="floatCounter">✅ 0 / 200</div>
+
+    <script>
+      const TOPICS = [
+        {
+          id: "types",
+          title: "Типы данных",
+          icon: "🧩",
+          color: "#60a5fa",
+          tasks: [
+            {
+              d: "easy",
+              t: "Примитивные типы: string, number, bigint, boolean, undefined, symbol, null. Всё остальное — объекты.",
+            },
+            {
+              d: "easy",
+              t: "Примитивы — неизменяемые значения, хранятся по значению. Объекты — изменяемые, хранятся по ссылке.",
+            },
+            {
+              d: "easy",
+              t: '<code>typeof 42</code> → "number", <code>typeof "hi"</code> → "string", <code>typeof true</code> → "boolean".',
+            },
+            {
+              d: "easy",
+              t: '<code>typeof undefined</code> → "undefined". <code>typeof null</code> → "object" — официально признанная ошибка языка.',
+            },
+            {
+              d: "easy",
+              t: '<code>typeof []</code> → "object", <code>typeof {}</code> → "object", <code>typeof Symbol("id")</code> → "symbol", <code>typeof 10n</code> → "bigint".',
+            },
+            {
+              d: "easy",
+              t: '<code>function getType(value) { return value === null ? "null" : typeof value; }</code>',
+            },
+            {
+              d: "easy",
+              t: "BigInt — тип для целых чисел произвольной точности. Создаётся суффиксом n: <code>123n</code> или <code>BigInt(123)</code>.",
+            },
+            {
+              d: "medium",
+              t: "<code>Array.isArray(arr)</code> для массива, <code>typeof obj === 'object' && obj !== null</code> для объекта, <code>typeof fn === 'function'</code> для функции, остальное примитивы.",
+            },
+            {
+              d: "medium",
+              t: "<code>typeof</code> для массива вернёт 'object', а <code>[] instanceof Array</code> вернёт true. instanceof проверяет цепочку прототипов.",
+            },
+            {
+              d: "medium",
+              t: "<code>function getHumanType(value) { if (value === null) return 'null'; if (Array.isArray(value)) return 'array'; return typeof value; }</code>",
+            },
+            {
+              d: "medium",
+              t: "Falsy: false, 0, -0, 0n, '', null, undefined, NaN. Truthy: все остальные, включая пустой массив [], пустой объект {}.",
+            },
+            {
+              d: "medium",
+              t: "Функция — объект, у неё есть свойства и методы. <code>function fn() {}; fn.prop = 'value';</code>",
+            },
+            {
+              d: "hard",
+              t: "<code>function isPlainObject(value) { return Object.prototype.toString.call(value) === '[object Object]'; }</code>",
+            },
+            {
+              d: "hard",
+              t: "<code>typeof []</code> → object, но <code>Object.prototype.toString.call([])</code> → '[object Array]', <code>Array.isArray([])</code> → true.",
+            },
+            {
+              d: "hard",
+              t: "<code>function typeStats(arr) { return arr.reduce((acc, val) => { let t = val === null ? 'null' : typeof val; acc[t] = (acc[t] || 0) + 1; return acc; }, {}); }</code>",
+            },
+          ],
+        },
+
+        {
+          id: "primitive_methods",
+          title: "Методы примитивов",
+          icon: "✨",
+          color: "#5eead4",
+          tasks: [
+            {
+              d: "easy",
+              t: "При вызове метода примитив временно оборачивается в объект-обёртку (String, Number, Boolean), который и вызывает метод.",
+            },
+            {
+              d: "easy",
+              t: '"hello".toUpperCase() → "HELLO". Создаётся временный объект String, вызывается метод, затем объект уничтожается.',
+            },
+            {
+              d: "easy",
+              t: '<code>(123.456).toFixed(2)</code> → "123.46" (строка, округлённая до двух знаков).',
+            },
+            {
+              d: "easy",
+              t: '<code>true.toString()</code> → "true". Boolean оборачивается в объект Boolean, вызывается метод toString.',
+            },
+            {
+              d: "easy",
+              t: "У null и undefined нет объектов-обёрток, поэтому попытка вызвать метод вызывает TypeError.",
+            },
+            {
+              d: "medium",
+              t: "let str = 'hello'; str.toUpperCase(); — внутри происходит new String(str).toUpperCase(); затем объект удаляется.",
+            },
+            {
+              d: "medium",
+              t: "Примитивная строка — неизменяемое значение. new String('abc') — объект, typeof вернёт 'object', сравнение по ссылке.",
+            },
+            {
+              d: "medium",
+              t: "new Number(5) — объект, в условиях преобразуется в число. 5 === new Number(5) → false, 5 == new Number(5) → true.",
+            },
+            {
+              d: "medium",
+              t: "<code>function callMethod(value) { if (typeof value === 'string') return value.toUpperCase(); if (typeof value === 'number') return value.toFixed(2); return value; }</code>",
+            },
+            {
+              d: "hard",
+              t: '"abc".x = 10 — строка временно оборачивается, свойство присваивается временному объекту, который сразу удаляется, свойство теряется.',
+            },
+            {
+              d: "hard",
+              t: "Обёртки создают объекты, которые ведут себя неожиданно: typeof new String('') → 'object', сравнения по ссылке, медленнее.",
+            },
+            {
+              d: "hard",
+              t: "// Временный объект-обёртка: 1. Примитив (строка/число/булеан) пытается получить доступ к свойству. 2. Создаётся объект соответствующего типа (String/Number/Boolean). 3. Выполняется операция. 4. Объект уничтожается. //",
+            },
+          ],
+        },
+
+        {
+          id: "numbers",
+          title: "Числа",
+          icon: "🔢",
+          color: "#f59e0b",
+          tasks: [
+            {
+              d: "easy",
+              t: "Тип number хранит числа с плавающей точкой двойной точности (64-bit IEEE 754), целые и дробные числа, ±Infinity, NaN.",
+            },
+            {
+              d: "easy",
+              t: "0.1 + 0.2 = 0.30000000000000004. Ошибка из-за представления чисел с плавающей точкой в двоичной системе.",
+            },
+            {
+              d: "easy",
+              t: "parseInt читает целое число из строки до первого нечислового символа, parseFloat читает число с плавающей точкой.",
+            },
+            {
+              d: "easy",
+              t: 'Number("123") → 123, Number("123px") → NaN (строгое преобразование).',
+            },
+            {
+              d: "easy",
+              t: "Math.round(4.5) → 5, Math.floor(4.5) → 4, Math.ceil(4.5) → 5.",
+            },
+            {
+              d: "easy",
+              t: "<code>Math.floor(Math.random() * 10) + 1</code>",
+            },
+            {
+              d: "easy",
+              t: "NaN — Not-a-Number, специальное значение. Проверка: <code>isNaN(value)</code> или <code>Number.isNaN(value)</code>.",
+            },
+            {
+              d: "medium",
+              t: "<code>function isFiniteNumber(value) { return typeof value === 'number' && isFinite(value); }</code>",
+            },
+            {
+              d: "medium",
+              t: "isNaN() преобразует аргумент в число перед проверкой. Number.isNaN() проверяет, что значение точно NaN (без преобразования).",
+            },
+            {
+              d: "medium",
+              t: "<code>function roundToTwo(num) { return Math.round(num * 100) / 100; }</code>",
+            },
+            {
+              d: "medium",
+              t: "<code>(5).toString(2)</code> → '101'. Число 5 в двоичной системе.",
+            },
+            {
+              d: "medium",
+              t: "Infinity получается при делении на ноль или при переполнении: <code>1/0 → Infinity, -1/0 → -Infinity</code>.",
+            },
+            {
+              d: "medium",
+              t: "<code>function sumDigits(n) { return String(Math.abs(n)).split('').reduce((s, d) => s + +d, 0); }</code>",
+            },
+            {
+              d: "hard",
+              t: "Это Number.MAX_SAFE_INTEGER, максимальное целое, которое можно точно представить в double (2^53 - 1).",
+            },
+            {
+              d: "hard",
+              t: "BigInt и number нельзя смешивать: <code>1n + 1 → TypeError</code>. Нужно явно преобразовывать: <code>Number(1n) + 1</code> или <code>1n + BigInt(1)</code>.",
+            },
+            {
+              d: "hard",
+              t: "<code>function calculate(expr) { try { return eval(expr); } catch { return 'Ошибка'; } }</code> — но лучше использовать Function или парсер.",
+            },
+          ],
+        },
+
+        {
+          id: "strings",
+          title: "Строки",
+          icon: "🔤",
+          color: "#a78bfa",
+          tasks: [
+            {
+              d: "easy",
+              t: "'одинарные', \"двойные\", `шаблонные`.",
+            },
+            {
+              d: "easy",
+              t: "Шаблонные строки обрамляются обратными кавычками: <code>`Привет, ${name}!`</code>",
+            },
+            {
+              d: "easy",
+              t: "'hello'.toUpperCase() → 'HELLO', 'HELLO'.toLowerCase() → 'hello'.",
+            },
+            {
+              d: "easy",
+              t: "'hello'.length → 5",
+            },
+            {
+              d: "easy",
+              t: "str[0], str[str.length - 1] или str.charAt(0), str.charAt(str.length - 1).",
+            },
+            {
+              d: "easy",
+              t: "slice(start, end) — от start до end (не включая end), substring(start, end) — аналогично, substr(start, length) — устаревший.",
+            },
+            {
+              d: "easy",
+              t: "'Hello world'.includes('world') → true, 'Hello'.startsWith('He') → true, 'Hello'.endsWith('lo') → true.",
+            },
+            {
+              d: "medium",
+              t: "<code>function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase(); }</code>",
+            },
+            {
+              d: "medium",
+              t: "'a b c'.split(' ') → ['a','b','c']; ['a','b','c'].join('-') → 'a-b-c'.",
+            },
+            {
+              d: "medium",
+              t: "<code>function countChar(str, char) { return str.split(char).length - 1; }</code>",
+            },
+            {
+              d: "medium",
+              t: "'  hello  world  '.trim().replace(/\\s+/g, ' ') → 'hello world'.",
+            },
+            {
+              d: "medium",
+              t: "'hello world'.replace('world', 'JS') → 'hello JS'; 'xx'.replaceAll('x', 'y') → 'yy'.",
+            },
+            {
+              d: "medium",
+              t: "<code>function isPalindrome(str) { const s = str.toLowerCase().replace(/[^а-яa-z]/g, ''); return s === s.split('').reverse().join(''); }</code>",
+            },
+            {
+              d: "hard",
+              t: "<code>function camelToKebab(str) { return str.replace(/([A-Z])/g, '-$1').toLowerCase(); }</code>",
+            },
+            {
+              d: "hard",
+              t: "<code>function escapeHTML(str) { return str.replace(/[&<>'\"]/g, function(m) { return { '&':'&amp;', '<':'&lt;', '>':'&gt;', \"'\":'&#39;', '\"':'&quot;' }[m]; }); }</code>",
+            },
+            {
+              d: "hard",
+              t: "<code>function parseQuery(str) { return Object.fromEntries(new URLSearchParams(str)); }</code>",
+            },
+          ],
+        },
+
+        {
+          id: "arrays",
+          title: "Массивы",
+          icon: "📚",
+          color: "#60a5fa",
+          tasks: [
+            {
+              d: "easy",
+              t: "[1,2,3], ['a','b','c'], [1,'a',true].",
+            },
+            {
+              d: "easy",
+              t: "Первый: arr[0], последний: arr[arr.length - 1], предпоследний: arr[arr.length - 2].",
+            },
+            {
+              d: "easy",
+              t: "Возвращается undefined.",
+            },
+            {
+              d: "easy",
+              t: "arr.push(4) → добавит 4 в конец; arr.unshift(0) → добавит 0 в начало.",
+            },
+            {
+              d: "easy",
+              t: "arr.pop() → удалит последний элемент; arr.shift() → удалит первый элемент.",
+            },
+            {
+              d: "easy",
+              t: "length — количество элементов. Если уменьшить length, массив обрежется. Если увеличить, появятся пустые элементы (empty).",
+            },
+            {
+              d: "easy",
+              t: "new Array(5) создаёт массив длиной 5 с пустыми слотами (empty), не undefined.",
+            },
+            {
+              d: "medium",
+              t: "for (let i=0; i<arr.length; i++) {...}; for (let val of arr) {...}; arr.forEach(val => {...});",
+            },
+            {
+              d: "medium",
+              t: "<code>function reverse(arr) { let res = []; for (let i = arr.length - 1; i >= 0; i--) res.push(arr[i]); return res; }</code>",
+            },
+            {
+              d: "medium",
+              t: "[1,2].concat([3,4]) → [1,2,3,4]; [...[1,2], ...[3,4]] → [1,2,3,4].",
+            },
+            {
+              d: "medium",
+              t: "let copy1 = arr.slice(); let copy2 = [...arr]; copy !== arr.",
+            },
+            {
+              d: "medium",
+              t: "arr.indexOf(5) → индекс первого вхождения или -1; arr.includes(5) → true/false.",
+            },
+            {
+              d: "medium",
+              t: "slice(start, end) — возвращает новый массив; splice(start, deleteCount, ...items) — изменяет исходный массив.",
+            },
+            {
+              d: "hard",
+              t: "<code>function unique(arr) { return arr.filter((v,i,a) => a.indexOf(v) === i); }</code>",
+            },
+            {
+              d: "hard",
+              t: "<code>function chunk(arr, size) { let res = []; for (let i = 0; i < arr.length; i += size) res.push(arr.slice(i, i + size)); return res; }</code>",
+            },
+            {
+              d: "hard",
+              t: "<code>function flattenOneLevel(arr) { return [].concat(...arr); }</code>",
+            },
+          ],
+        },
+
+        {
+          id: "array_methods",
+          title: "Методы массивов",
+          icon: "🛠️",
+          color: "#22c55e",
+          tasks: [
+            {
+              d: "easy",
+              t: "[1,2,3].forEach(console.log);",
+            },
+            {
+              d: "easy",
+              t: "[1,2,3].map(x => x * x) → [1,4,9].",
+            },
+            {
+              d: "easy",
+              t: "[1,2,3,4].filter(x => x % 2 === 0) → [2,4].",
+            },
+            {
+              d: "easy",
+              t: "[1,2,3].reduce((sum, x) => sum + x, 0) → 6.",
+            },
+            {
+              d: "easy",
+              t: "find возвращает первый подходящий элемент, filter — массив всех подходящих элементов.",
+            },
+            {
+              d: "easy",
+              t: "[1,2,3].some(x => x > 2) → true; [1,2,3].every(x => x > 0) → true.",
+            },
+            {
+              d: "easy",
+              t: "['banana','apple','cherry'].sort() → ['apple','banana','cherry'].",
+            },
+            {
+              d: "medium",
+              t: "По умолчанию sort() сортирует как строки. Для чисел нужно передать (a,b) => a - b.",
+            },
+            {
+              d: "medium",
+              t: "[3,1,2].sort((a,b) => a - b) → [1,2,3]; sort((a,b) => b - a) → [3,2,1].",
+            },
+            {
+              d: "medium",
+              t: "<code>arr.reduce((acc, val) => { acc[val] = (acc[val] || 0) + 1; return acc; }, {})</code>",
+            },
+            {
+              d: "medium",
+              t: "['a','b'].map((v,i) => ({ value: v, index: i }))",
+            },
+            {
+              d: "medium",
+              t: "[[1],[2,3]].flat() → [1,2,3]; ['a b','c d'].flatMap(s => s.split(' ')) → ['a','b','c','d'].",
+            },
+            {
+              d: "medium",
+              t: "[1,2,3,4,5].filter(x => x > 2).map(x => x * 2).sort((a,b) => b - a) → [10,8,6].",
+            },
+            {
+              d: "medium",
+              t: "new Array(3).fill(0) → [0,0,0].",
+            },
+            {
+              d: "medium",
+              t: "Array.from('abc') → ['a','b','c']; Array.from({length: 3}, (_,i) => i) → [0,1,2].",
+            },
+            {
+              d: "medium",
+              t: "Object.fromEntries([['a',1],['b',2]]) → {a:1,b:2}; Object.entries({a:1,b:2}) → [['a',1],['b',2]].",
+            },
+            {
+              d: "hard",
+              t: "<code>Array.prototype.myMap = function(fn) { let res = []; for (let i=0; i<this.length; i++) res.push(fn(this[i], i, this)); return res; }</code>",
+            },
+            {
+              d: "hard",
+              t: "<code>Array.prototype.myFilter = function(fn) { let res = []; for (let i=0; i<this.length; i++) if (fn(this[i], i, this)) res.push(this[i]); return res; }</code>",
+            },
+            {
+              d: "hard",
+              t: "<code>Array.prototype.myReduce = function(fn, acc) { let i=0; if (acc === undefined) { acc = this[0]; i=1; } for (; i<this.length; i++) acc = fn(acc, this[i], i, this); return acc; }</code>",
+            },
+            {
+              d: "hard",
+              t: "<code>function groupBy(arr, keyFn) { return arr.reduce((acc, item) => { let key = keyFn(item); (acc[key] = acc[key] || []).push(item); return acc; }, {}); }</code>",
+            },
+          ],
+        },
+
+        {
+          id: "iterables",
+          title: "Перебираемые объекты",
+          icon: "🔁",
+          color: "#14b8a6",
+          tasks: [
+            {
+              d: "easy",
+              t: "Объект, у которого определён метод [Symbol.iterator], позволяющий перебирать его значения.",
+            },
+            {
+              d: "easy",
+              t: "Массив, строка, Set, Map, NodeList, arguments, TypedArray.",
+            },
+            {
+              d: "easy",
+              t: "for (let ch of 'abc') {}; for (let x of [1,2,3]) {}; for (let v of new Set([1,2,3])) {}",
+            },
+            {
+              d: "easy",
+              t: "Symbol.iterator — это метод, который возвращает итератор (объект с методом next()).",
+            },
+            {
+              d: "medium",
+              t: "<code>let range = { from: 1, to: 5, [Symbol.iterator]() { let current = this.from; let last = this.to; return { next() { return current <= last ? { value: current++, done: false } : { done: true }; } }; } }</code>",
+            },
+            {
+              d: "medium",
+              t: "[...'abc'] → ['a','b','c']",
+            },
+            {
+              d: "medium",
+              t: "[...'hello']",
+            },
+            {
+              d: "medium",
+              t: "Итерируемые имеют [Symbol.iterator], array-like имеют свойство length и индексы, но не обязательно итератор.",
+            },
+            {
+              d: "medium",
+              t: "let obj = { data: [1,2,3], [Symbol.iterator]() { return this.data[Symbol.iterator](); } }; let [a,b] = obj;",
+            },
+            {
+              d: "hard",
+              t: "<code>let infinite = { [Symbol.iterator]() { let i = 0; return { next() { return { value: i++, done: false }; } }; } }</code>",
+            },
+            {
+              d: "hard",
+              t: "<code>let obj = { a:1, b:2, c:3, [Symbol.iterator]() { let values = Object.values(this).filter(v => typeof v === 'number'); let i=0; return { next() { return i < values.length ? { value: values[i++], done: false } : { done: true }; } }; } }</code>",
+            },
+            {
+              d: "hard",
+              t: "<code>let filterIterable = { data: [1,2,3,4], [Symbol.iterator]() { let i=0; let data = this.data.filter(x => x % 2 === 0); return { next() { return i < data.length ? { value: data[i++], done: false } : { done: true }; } }; } }</code>",
+            },
+          ],
+        },
+
+        {
+          id: "map_set",
+          title: "Map и Set",
+          icon: "🗺️",
+          color: "#8b5cf6",
+          tasks: [
+            {
+              d: "easy",
+              t: "new Map([['key1','value1'], ['key2','value2'], ['key3','value3']])",
+            },
+            {
+              d: "easy",
+              t: "Ключами Map могут быть любые значения (включая объекты), сохраняется порядок вставки, есть size, лучше для частых изменений.",
+            },
+            {
+              d: "easy",
+              t: "map.set('key','val'); map.get('key'); map.has('key'); map.delete('key');",
+            },
+            {
+              d: "easy",
+              t: "new Set([1,2,2,3,3,4]) → Set(4) {1,2,3,4}",
+            },
+            {
+              d: "easy",
+              t: "Set хранит только уникальные значения, дубликаты игнорируются.",
+            },
+            {
+              d: "easy",
+              t: "map.size, set.size",
+            },
+            {
+              d: "medium",
+              t: "for (let [key, value] of map) { console.log(key, value); }",
+            },
+            {
+              d: "medium",
+              t: "new Map(Object.entries({a:1,b:2}))",
+            },
+            {
+              d: "medium",
+              t: "Object.fromEntries(map)",
+            },
+            {
+              d: "medium",
+              t: "[...new Set([1,2,2,3,4,4])] → [1,2,3,4]",
+            },
+            {
+              d: "medium",
+              t: "<code>new Set(arr1.filter(x => arr2.includes(x)))</code>",
+            },
+            {
+              d: "medium",
+              t: "<code>new Set(arr1.filter(x => !arr2.includes(x)))</code>",
+            },
+            {
+              d: "medium",
+              t: "<code>str.split(' ').reduce((map, word) => map.set(word, (map.get(word)||0)+1), new Map())</code>",
+            },
+            {
+              d: "hard",
+              t: "<code>function groupBy(arr, keyFn) { return arr.reduce((map, item) => { let key = keyFn(item); map.set(key, [...(map.get(key)||[]), item]); return map; }, new Map()); }</code>",
+            },
+            {
+              d: "hard",
+              t: "<code>function memoize(fn) { let cache = new Map(); return function(arg) { if (cache.has(arg)) return cache.get(arg); let result = fn(arg); cache.set(arg, result); return result; }; }</code>",
+            },
+            {
+              d: "hard",
+              t: "Map лучше для частых изменений, ключей не-строк, сохранения порядка. Объект лучше для простых структур, JSON-сериализации, литералов.",
+            },
+          ],
+        },
+
+        {
+          id: "weakmap_weakset",
+          title: "WeakMap и WeakSet",
+          icon: "🫥",
+          color: "#f472b6",
+          tasks: [
+            {
+              d: "easy",
+              t: "WeakMap — коллекция ключ-значение, где ключи — объекты, хранятся слабо (не препятствуют сборке мусора).",
+            },
+            {
+              d: "easy",
+              t: "Если бы ключи были примитивами, нельзя было бы определить, когда удалять запись — примитивы не собираются сборщиком мусора.",
+            },
+            {
+              d: "easy",
+              t: "WeakSet — коллекция объектов, хранящихся слабо (не препятствуют сборке мусора).",
+            },
+            {
+              d: "easy",
+              t: "Только объекты могут иметь слабые ссылки, примитивы всегда хранятся сильно.",
+            },
+            {
+              d: "medium",
+              t: "Потому что WeakMap и WeakSet не предотвращают сборку мусора, и элементы могут быть удалены в любой момент, перебор был бы недетерминирован.",
+            },
+            {
+              d: "medium",
+              t: "let privateData = new WeakMap(); class User { constructor(name) { privateData.set(this, { name }); } getName() { return privateData.get(this).name; } }",
+            },
+            {
+              d: "medium",
+              t: "let processed = new WeakSet(); function process(obj) { if (processed.has(obj)) return; // обработать obj processed.add(obj); }",
+            },
+            {
+              d: "medium",
+              t: "Слабые ссылки позволяют сборщику мусора удалять объекты, когда они больше не используются, даже если они есть в WeakMap, предотвращая утечки.",
+            },
+            {
+              d: "hard",
+              t: "let elementCache = new WeakMap(); function getMetadata(el) { if (!elementCache.has(el)) elementCache.set(el, {}); return elementCache.get(el); }",
+            },
+            {
+              d: "hard",
+              t: "Map — когда нужно перебирать, знать размер, использовать примитивные ключи. WeakMap — когда ключи — объекты, и нужно избежать утечек памяти (кеши, приватные данные).",
+            },
+          ],
+        },
+
+        {
+          id: "object_entries",
+          title: "Object.keys, values, entries",
+          icon: "🗂️",
+          color: "#38bdf8",
+          tasks: [
+            {
+              d: "easy",
+              t: "Object.keys({a:1,b:2}) → ['a','b']",
+            },
+            {
+              d: "easy",
+              t: "Object.values({a:1,b:2}) → [1,2]",
+            },
+            {
+              d: "easy",
+              t: "Object.entries({a:1,b:2}) → [['a',1],['b',2]]",
+            },
+            {
+              d: "easy",
+              t: "for (let [key, value] of Object.entries(obj)) { ... }",
+            },
+            {
+              d: "easy",
+              t: "for...in перебирает также свойства из прототипа, Object.keys() — только собственные перечисляемые свойства.",
+            },
+            {
+              d: "medium",
+              t: "Object.entries({apple:100,banana:200}).map(([k,v]) => `${k}: ${v}`)",
+            },
+            {
+              d: "medium",
+              t: "<code>function sumValues(obj) { return Object.values(obj).reduce((sum, v) => sum + (typeof v === 'number' ? v : 0), 0); }</code>",
+            },
+            {
+              d: "medium",
+              t: "Object.fromEntries(Object.entries(obj).filter(([_,v]) => v > 0))",
+            },
+            {
+              d: "medium",
+              t: "Object.fromEntries(Object.entries(obj).sort(([a],[b]) => a.localeCompare(b)))",
+            },
+            {
+              d: "hard",
+              t: "<code>function invert(obj) { return Object.fromEntries(Object.entries(obj).map(([k,v]) => [v, k])); }</code>",
+            },
+            {
+              d: "hard",
+              t: "<code>function mapObject(obj, fn) { return Object.fromEntries(Object.entries(obj).map(([k,v]) => [k, fn(v, k)])); }</code>",
+            },
+            {
+              d: "hard",
+              t: "<code>function deepFilter(obj, predicate) { return Object.fromEntries(Object.entries(obj).filter(([k,v]) => { if (v && typeof v === 'object') v = deepFilter(v, predicate); return predicate(v, k); }).map(([k,v]) => [k, v])); }</code>",
+            },
+          ],
+        },
+
+        {
+          id: "destructuring",
+          title: "Деструктурирующее присваивание",
+          icon: "🧠",
+          color: "#f59e0b",
+          tasks: [
+            {
+              d: "easy",
+              t: "let [a,b,c] = [1,2,3];",
+            },
+            {
+              d: "easy",
+              t: "let {name, age} = {name:'Ann', age:20};",
+            },
+            {
+              d: "easy",
+              t: "let {name: userName} = {name:'Ann'};",
+            },
+            {
+              d: "easy",
+              t: "let [a=1] = []; let {x=10} = {};",
+            },
+            {
+              d: "easy",
+              t: "let [,,c] = [1,2,3];",
+            },
+            {
+              d: "easy",
+              t: "[a,b] = [b,a];",
+            },
+            {
+              d: "medium",
+              t: "let [first, ...rest] = [1,2,3,4];",
+            },
+            {
+              d: "medium",
+              t: "let {name, ...rest} = {name:'Ann', age:20, city:'Moscow'};",
+            },
+            {
+              d: "medium",
+              t: "let user = {name:'Ann', address:{city:'Moscow', street:'Lenina'}}; let {address:{city, street}} = user;",
+            },
+            {
+              d: "medium",
+              t: "<code>function greet({name, age}) { return `Привет, ${name}, тебе ${age}`; }</code>",
+            },
+            {
+              d: "medium",
+              t: "<code>function distance([x1,y1], [x2,y2]) { return Math.hypot(x2-x1, y2-y1); }</code>",
+            },
+            {
+              d: "medium",
+              t: "for (let [k, v] of Object.entries(obj)) { ... }",
+            },
+            {
+              d: "hard",
+              t: "let {a=1, b:{c=2, d:[e=3]}} = {b:{d:[]}};",
+            },
+            {
+              d: "hard",
+              t: "<code>function normalizeUser({name = 'Аноним', age = 0, email = 'нет'} = {}) { return {name, age, email}; }</code>",
+            },
+            {
+              d: "hard",
+              t: "let [a,b] = new Set([1,2,3]); // работает, т.к. Set итерируемый",
+            },
+            {
+              d: "hard",
+              t: "// вместо const name = user.name; const age = user.age; const city = user.address.city; можно const {name, age, address:{city}} = user;",
+            },
+          ],
+        },
+
+        {
+          id: "date_time",
+          title: "Дата и время",
+          icon: "⏰",
+          color: "#22c55e",
+          tasks: [
+            {
+              d: "easy",
+              t: "new Date()",
+            },
+            {
+              d: "easy",
+              t: "new Date('2024-01-01'), new Date(2024, 0, 1)",
+            },
+            {
+              d: "easy",
+              t: "date.getFullYear(), getMonth(), getDate(), getHours(), getMinutes(), getSeconds()",
+            },
+            {
+              d: "easy",
+              t: "getDay() — день недели (0-6, воскресенье-0), getDate() — день месяца (1-31)",
+            },
+            {
+              d: "easy",
+              t: "date.setFullYear(2025); date.setMonth(11); date.setDate(25);",
+            },
+            {
+              d: "easy",
+              t: "Timestamp — количество миллисекунд с 1 января 1970 UTC. Date.now()",
+            },
+            {
+              d: "easy",
+              t: "date.toString(), date.toDateString(), date.toTimeString()",
+            },
+            {
+              d: "medium",
+              t: "function diffDays(d1, d2) { return Math.abs((d2 - d1) / (1000*60*60*24)); }",
+            },
+            {
+              d: "medium",
+              t: "function formatDate(date) { let d = date.getDate().toString().padStart(2,'0'); let m = (date.getMonth()+1).toString().padStart(2,'0'); let y = date.getFullYear(); return `${d}.${m}.${y}`; }",
+            },
+            {
+              d: "medium",
+              t: "function minutesSince(date) { return Math.floor((Date.now() - date) / 60000); }",
+            },
+            {
+              d: "medium",
+              t: "new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)",
+            },
+            {
+              d: "medium",
+              t: "UTC-методы возвращают дату в UTC (getUTCFullYear и т.д.), локальные — в местном часовом поясе.",
+            },
+            {
+              d: "medium",
+              t: "toISOString() возвращает строку в формате YYYY-MM-DDTHH:mm:ss.sssZ (UTC).",
+            },
+            {
+              d: "medium",
+              t: "function isWeekend(date) { let day = date.getDay(); return day === 0 || day === 6; }",
+            },
+            {
+              d: "medium",
+              t: "function getWeekOfMonth(date) { return Math.ceil(date.getDate() / 7); }",
+            },
+            {
+              d: "hard",
+              t: "function timer(target) { setInterval(() => { let diff = target - new Date(); console.log(`Осталось: ${Math.floor(diff/1000)}с`); }, 1000); }",
+            },
+            {
+              d: "hard",
+              t: "function addMonths(date, months) { let d = new Date(date); d.setMonth(d.getMonth() + months); if (d.getDate() !== date.getDate()) d.setDate(0); return d; }",
+            },
+            {
+              d: "hard",
+              t: "Intl.DateTimeFormat('ru').format(date) — более гибкое форматирование с учётом локали.",
+            },
+            {
+              d: "hard",
+              t: "function parseDate(str) { let [d,m,y,h,min] = str.split(/[. :]/); return new Date(y, m-1, d, h||0, min||0); }",
+            },
+            {
+              d: "hard",
+              t: "let scheduler = { events: [], addEvent(date) { this.events.push(date); this.events.sort((a,b)=>a-b); }, getNext() { return this.events.find(d => d > Date.now()); } }",
+            },
+          ],
+        },
+
+        {
+          id: "json",
+          title: "Формат JSON, метод toJSON",
+          icon: "🧾",
+          color: "#ef4444",
+          tasks: [
+            {
+              d: "easy",
+              t: "JSON — текстовый формат обмена данными. В JSON ключи обязательно в двойных кавычках, нет функций, undefined, символов.",
+            },
+            {
+              d: "easy",
+              t: "JSON.stringify({a:1,b:2}) → '{\"a\":1,\"b\":2}'",
+            },
+            {
+              d: "easy",
+              t: "JSON.parse('{\"a\":1,\"b\":2}') → {a:1,b:2}",
+            },
+            {
+              d: "easy",
+              t: "Строки, числа, булевы, null, объекты, массивы. Не сериализуются: функции, undefined, Symbol, циклические ссылки.",
+            },
+            {
+              d: "easy",
+              t: "Превращаются в null, если встречаются в массиве, или просто пропускаются, если в объекте.",
+            },
+            {
+              d: "easy",
+              t: "Date превращается в строку в формате ISO.",
+            },
+            {
+              d: "medium",
+              t: "JSON.stringify(obj, ['name', 'age'])",
+            },
+            {
+              d: "medium",
+              t: "JSON.stringify(obj, (key, value) => typeof value === 'number' ? value * 2 : value)",
+            },
+            {
+              d: "medium",
+              t: "JSON.stringify(obj, null, 2)",
+            },
+            {
+              d: "medium",
+              t: "JSON.parse(json, (key, value) => key === 'date' ? new Date(value) : value)",
+            },
+            {
+              d: "medium",
+              t: "let json = '{\"date\":\"2024-01-01T00:00:00.000Z\"}'; JSON.parse(json, (k,v) => k === 'date' ? new Date(v) : v)",
+            },
+            {
+              d: "medium",
+              t: "toJSON() — метод, который вызывается при JSON.stringify для кастомной сериализации.",
+            },
+            {
+              d: "medium",
+              t: "let obj = { data: 123, toJSON() { return this.data * 2; } }; JSON.stringify(obj) → '246'",
+            },
+            {
+              d: "medium",
+              t: "JSON.stringify([...map])",
+            },
+            {
+              d: "medium",
+              t: "JSON.stringify([...set])",
+            },
+            {
+              d: "hard",
+              t: "Циклические ссылки вызывают ошибку, потому что JSON не может их представить в виде текста.",
+            },
+            {
+              d: "hard",
+              t: "function safeStringify(obj) { let cache = new Set(); return JSON.stringify(obj, (k,v) => { if (typeof v === 'object' && v !== null) { if (cache.has(v)) return; cache.add(v); } return v; }); }",
+            },
+            {
+              d: "hard",
+              t: "function saveState(obj) { localStorage.setItem('state', JSON.stringify(obj)); } function loadState() { return JSON.parse(localStorage.getItem('state') || 'null'); }",
+            },
+            {
+              d: "hard",
+              t: "let inner = { value: 123, toJSON() { return 'inner'; } }; let outer = { inner, toJSON() { return { inner: this.inner }; } };",
+            },
+          ],
+        },
+      ];
+
+      const STORAGE_KEY = "jsTasks6_done";
+      let done = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      let currentFilter = "all";
+      let searchQuery = "";
+      const TOTAL = 200;
+
+      function renderAll() {
+        const root = document.getElementById("tasksRoot");
+        root.innerHTML = "";
+
+        let easy = 0,
+          medium = 0,
+          hard = 0;
+        TOPICS.forEach((topic) =>
+          topic.tasks.forEach((task) => {
+            if (task.d === "easy") easy++;
+            else if (task.d === "medium") medium++;
+            else hard++;
+          }),
+        );
+
+        document.getElementById("easyCount").textContent = easy;
+        document.getElementById("medCount").textContent = medium;
+        document.getElementById("hardCount").textContent = hard;
+
+        let taskNumber = 0;
+
+        TOPICS.forEach((topic) => {
+          const section = document.createElement("section");
+          section.className = "topic-section";
+
+          const header = document.createElement("div");
+          header.className = "topic-header";
+          header.innerHTML = `
+      <div class="topic-icon" style="background:${topic.color}22;color:${topic.color}">${topic.icon}</div>
+      <div class="topic-title">${topic.title}</div>
+      <div class="topic-count">${topic.tasks.length} ответов</div>
+    `;
+          section.appendChild(header);
+
+          const grid = document.createElement("div");
+          grid.className = "task-grid";
+
+          topic.tasks.forEach((task, index) => {
+            taskNumber++;
+            const id = `${topic.id}_${index}`;
+            const isDone = !!done[id];
+
+            const labels = {
+              easy: "Лёгкое",
+              medium: "Среднее",
+              hard: "Сложное",
+            };
+            const diffClasses = {
+              easy: "diff-easy",
+              medium: "diff-medium",
+              hard: "diff-hard",
+            };
+
+            const card = document.createElement("div");
+            card.className = `task-card${isDone ? " done" : ""}`;
+            card.style.setProperty("--card-color", topic.color);
+            card.dataset.id = id;
+            card.dataset.diff = task.d;
+            card.dataset.done = isDone ? "1" : "0";
+            card.dataset.text = task.t.replace(/<[^>]+>/g, "").toLowerCase();
+
+            card.innerHTML = `
+        <div class="task-top">
+          <span class="task-num">#${String(taskNumber).padStart(3, "0")}</span>
+          <span class="difficulty ${diffClasses[task.d]}">${labels[task.d]}</span>
+        </div>
+        <div class="task-text">${task.t}</div>
+        <div class="task-actions">
+          <button class="btn-done" onclick="toggleDone('${id}', this)">
+            ${isDone ? "✅ Изучено" : "○ Изучить"}
+          </button>
+        </div>
+      `;
+
+            grid.appendChild(card);
+          });
+
+          section.appendChild(grid);
+          root.appendChild(section);
+        });
+
+        updateProgress();
+        applyFilter();
+      }
+
+      function toggleDone(id, btn) {
+        done[id] = !done[id];
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(done));
+
+        const card = btn.closest(".task-card");
+        const isDone = !!done[id];
+
+        card.classList.toggle("done", isDone);
+        card.dataset.done = isDone ? "1" : "0";
+        btn.textContent = isDone ? "✅ Изучено" : "○ Изучить";
+
+        updateProgress();
+        applyFilter();
+      }
+
+      function updateProgress() {
+        const completed = Object.values(done).filter(Boolean).length;
+        const percent = ((completed / TOTAL) * 100).toFixed(1);
+        document.getElementById("progressBar").style.width = percent + "%";
+        document.getElementById("progressText").textContent =
+          `${completed} / ${TOTAL}`;
+        document.getElementById("floatCounter").textContent =
+          `✅ ${completed} / ${TOTAL}`;
+      }
+
+      function setFilter(filter, btn) {
+        currentFilter = filter;
+        document
+          .querySelectorAll(".filter-btn")
+          .forEach((el) => el.classList.remove("active"));
+        btn.classList.add("active");
+        applyFilter();
+      }
+
+      function filterTasks() {
+        searchQuery = document
+          .getElementById("searchInput")
+          .value.toLowerCase()
+          .trim();
+        applyFilter();
+      }
+
+      function applyFilter() {
+        document.querySelectorAll(".task-card").forEach((card) => {
+          const diff = card.dataset.diff;
+          const isDone = card.dataset.done === "1";
+          const text = card.dataset.text;
+
+          let visible = true;
+
+          if (currentFilter === "easy") visible = diff === "easy";
+          else if (currentFilter === "medium") visible = diff === "medium";
+          else if (currentFilter === "hard") visible = diff === "hard";
+          else if (currentFilter === "done") visible = isDone;
+          else if (currentFilter === "undone") visible = !isDone;
+
+          if (searchQuery && !text.includes(searchQuery)) visible = false;
+          card.classList.toggle("hidden", !visible);
+        });
+
+        document.querySelectorAll(".topic-section").forEach((section) => {
+          const hasVisibleCards = [
+            ...section.querySelectorAll(".task-card"),
+          ].some((card) => !card.classList.contains("hidden"));
+          section.classList.toggle("hidden", !hasVisibleCards);
+        });
+      }
+
+      function resetAll() {
+        if (confirm("Сбросить весь прогресс?")) {
+          done = {};
+          localStorage.removeItem(STORAGE_KEY);
+          renderAll();
+        }
+      }
+
+      renderAll();
+    </script>
+  </body>
+</html>
